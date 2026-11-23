@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 
 class DiseaseBase(BaseModel):
@@ -15,8 +15,7 @@ class DiseaseResponse(DiseaseBase):
     id: int
     crop_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class CropBase(BaseModel):
     common_name: str
@@ -27,5 +26,4 @@ class CropResponse(CropBase):
     id: int
     diseases: List[DiseaseResponse] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

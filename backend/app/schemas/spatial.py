@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, Dict, Any, List
 
 class PointValidationRequest(BaseModel):
@@ -24,8 +24,7 @@ class RegionResponse(BaseModel):
     centroid_lon: float
     agricultural_area_ha: Optional[float] = 0.0
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class GeoJSONFeature(BaseModel):
     type: str = "Feature"

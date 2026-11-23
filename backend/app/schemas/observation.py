@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import date
 from typing import Optional
 
@@ -23,8 +23,7 @@ class FieldObservationResponse(FieldObservationCreate):
     crop_name: Optional[str] = None
     disease_name: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ObservationFilterParams(BaseModel):
     region_id: Optional[int] = None

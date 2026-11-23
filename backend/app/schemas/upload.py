@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import List, Optional
 
@@ -8,8 +8,7 @@ class UploadErrorItem(BaseModel):
     invalid_value: Optional[str] = None
     rejection_reason: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class UploadBatchResponse(BaseModel):
     id: int
@@ -22,8 +21,7 @@ class UploadBatchResponse(BaseModel):
     uploaded_at: datetime
     errors: List[UploadErrorItem] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class UploadSummary(BaseModel):
     batch_id: int

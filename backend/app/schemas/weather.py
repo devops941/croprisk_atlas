@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import date
 from typing import Optional
 
@@ -20,8 +20,7 @@ class WeatherRecordCreate(BaseModel):
 class WeatherRecordResponse(WeatherRecordCreate):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class WeatherFilterParams(BaseModel):
     region_id: Optional[int] = None
