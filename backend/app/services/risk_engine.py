@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
 from app.models import Region, Crop, Disease, WeatherRecord, FieldObservation, RiskAssessment
+from app.services.ml_engine import ml_risk_engine
 
 class EpidemiologicalRiskEngine:
     """
@@ -350,6 +351,19 @@ class EpidemiologicalRiskEngine:
         else:
             factor = "Atmospheric conditions remain unfavorable for fungal spore proliferation."
 
+        # ML Prediction Hook
+        ml_score = None
+        ml_level = None
+        ml_conf = None
+        if weather_records:
+            feats = ml_risk_engine.extract_environmental_features(weather_records, growth_stage)
+            if feats:
+                ml_res = ml_risk_engine.predict_risk(feats)
+                if ml_res.get("status") == "PREDICTION_COMPLETED":
+                    ml_score = ml_res.get("ml_predicted_score")
+                    ml_level = ml_res.get("ml_predicted_level")
+                    ml_conf = ml_res.get("ml_confidence")
+
         # Fetch or Create RiskAssessment
         assessment = db.query(RiskAssessment).filter(
             RiskAssessment.region_id == region_id,
@@ -366,6 +380,9 @@ class EpidemiologicalRiskEngine:
                 assessment_date=assessment_date,
                 rule_based_score=cum_score,
                 rule_based_level=risk_level,
+                ml_predicted_score=ml_score,
+                ml_predicted_level=ml_level,
+                ml_confidence=ml_conf,
                 triggered_rules_json=json.dumps(all_triggered_rules),
                 primary_risk_factor=factor,
                 avg_temp_min_window=avg_temp_min,
@@ -376,6 +393,10 @@ class EpidemiologicalRiskEngine:
         else:
             assessment.rule_based_score = cum_score
             assessment.rule_based_level = risk_level
+            if ml_score is not None:
+                assessment.ml_predicted_score = ml_score
+                assessment.ml_predicted_level = ml_level
+                assessment.ml_confidence = ml_conf
             assessment.triggered_rules_json = json.dumps(all_triggered_rules)
             assessment.primary_risk_factor = factor
             assessment.avg_temp_min_window = avg_temp_min

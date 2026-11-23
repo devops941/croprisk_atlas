@@ -9,8 +9,38 @@ from app.models import Region, Crop, Disease, RiskAssessment
 from app.schemas.risk import RiskEvaluateRequest, RiskAssessmentResponse
 from app.services.risk_engine import risk_engine
 from app.services.geospatial import geospatial_service
+from app.services.ml_engine import ml_risk_engine
 
 router = APIRouter()
+
+@router.post("/train-ml", response_model=Dict[str, Any])
+def train_machine_learning_model(
+    disease_id: int = Query(1, description="Pathogen ID (default: 1 for Rice Blast)"),
+    db: Session = Depends(get_db)
+):
+    """
+    Triggers feature matrix compilation and trains Random Forest classifier
+    using Spatial GroupKFold Cross-Validation across Madurai Taluks.
+    Returns honest evaluation metrics (PR-AUC, Balanced F1, Brier Score, and Feature Importances).
+    """
+    try:
+        metrics = ml_risk_engine.train_and_evaluate(db=db, disease_id=disease_id)
+        return metrics
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"ML training failed: {str(e)}")
+
+@router.get("/ml-status", response_model=Dict[str, Any])
+def get_ml_model_status():
+    """Returns current active status of the machine learning inference engine"""
+    is_trained = ml_risk_engine.model is not None or ml_risk_engine.MODEL_PATH.exists()
+    return {
+        "model_type": "RandomForestClassifier",
+        "is_trained": is_trained,
+        "model_file": str(ml_risk_engine.MODEL_PATH.name),
+        "feature_count": len(ml_risk_engine.FEATURE_NAMES),
+        "features": ml_risk_engine.FEATURE_NAMES,
+        "spatial_validation_protocol": "Spatial GroupKFold (Taluk partitioning)"
+    }
 
 @router.post("/evaluate", response_model=RiskAssessmentResponse)
 def evaluate_risk(payload: RiskEvaluateRequest, db: Session = Depends(get_db)):
