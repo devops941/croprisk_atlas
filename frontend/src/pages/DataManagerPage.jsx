@@ -173,9 +173,16 @@ const DataManagerPage = () => {
                     onChange={(e) => setWeatherFile(e.target.files[0])}
                     required
                   />
-                  <div className="form-text small text-muted">
-                    Must include: <code>taluk_name, record_date, temp_max, temp_min, temp_avg, rh_avg</code>
-                  </div>
+                  {weatherFile && weatherFile.name.toLowerCase().includes('scouting') ? (
+                    <div className="alert alert-warning py-2 px-3 small mt-2 mb-0 animate-pop">
+                      <i className="bi bi-exclamation-triangle-fill me-1 text-warning"></i>
+                      <strong>Wrong File Type:</strong> You selected <code>{weatherFile.name}</code> which is a Field Scouting file! Please upload <strong><code>madurai_weather_samba_season.csv</code></strong> here, or switch to the <strong>"Field Scouting Ingestion"</strong> tab above.
+                    </div>
+                  ) : (
+                    <div className="form-text small text-muted">
+                      Expected file: <strong><code>data/raw/madurai_weather_samba_season.csv</code></strong> (Must include: <code>taluk_name, record_date, temp_max, temp_min, temp_avg, rh_avg</code>)
+                    </div>
+                  )}
                 </div>
 
                 <div className="mb-4">
@@ -263,9 +270,16 @@ const DataManagerPage = () => {
                     onChange={(e) => setObsFile(e.target.files[0])}
                     required
                   />
-                  <div className="form-text small text-muted">
-                    Must include: <code>observation_date, latitude, longitude, crop_name, disease_name, severity_score_ses</code>
-                  </div>
+                  {obsFile && obsFile.name.toLowerCase().includes('weather') ? (
+                    <div className="alert alert-warning py-2 px-3 small mt-2 mb-0 animate-pop">
+                      <i className="bi bi-exclamation-triangle-fill me-1 text-warning"></i>
+                      <strong>Wrong File Type:</strong> You selected <code>{obsFile.name}</code> which is a Weather file! Please upload <strong><code>madurai_field_scouting_observations.csv</code></strong> here, or switch to the <strong>"Weather CSV Ingestion"</strong> tab above.
+                    </div>
+                  ) : (
+                    <div className="form-text small text-muted">
+                      Expected file: <strong><code>data/raw/madurai_field_scouting_observations.csv</code></strong> (Must include: <code>observation_date, latitude, longitude, crop_name, disease_name, severity_score_ses</code>)
+                    </div>
+                  )}
                 </div>
 
                 <div className="mb-4">
