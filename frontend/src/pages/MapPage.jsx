@@ -20,7 +20,7 @@ const MapPage = () => {
   const [selectedTaluk, setSelectedTaluk] = useState(null);
   const [showChoropleth, setShowChoropleth] = useState(true);
   const [showObservations, setShowObservations] = useState(true);
-  const [basemap, setBasemap] = useState('positron'); // 'positron' | 'osm' | 'satellite'
+  const [basemap, setBasemap] = useState('osm'); // 'osm' | 'satellite' | 'topo'
   const [loading, setLoading] = useState(false);
 
   // Madurai District Geographic Center
@@ -29,20 +29,20 @@ const MapPage = () => {
   const [mapZoom, setMapZoom] = useState(10);
 
   const basemapTiles = {
-    positron: {
-      name: 'CartoDB Light',
-      url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap'
-    },
     osm: {
-      name: 'OpenStreetMap',
+      name: 'OpenStreetMap Standard',
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      attribution: '&copy; OpenStreetMap contributors'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     },
     satellite: {
-      name: 'Satellite Imagery',
+      name: 'Satellite Aerial Imagery',
       url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       attribution: '&copy; Esri, Maxar, Earthstar Geographics'
+    },
+    topo: {
+      name: 'Topographic Terrain',
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      attribution: '&copy; Esri, HERE, Garmin, Intermap'
     }
   };
 
@@ -236,13 +236,13 @@ const MapPage = () => {
               {/* Basemap Switcher */}
               <select
                 className="form-select form-select-sm"
-                style={{ width: '135px' }}
+                style={{ width: '150px' }}
                 value={basemap}
                 onChange={(e) => setBasemap(e.target.value)}
               >
-                <option value="positron">Carto Light</option>
-                <option value="osm">Standard OSM</option>
+                <option value="osm">Street Map (OSM)</option>
                 <option value="satellite">Satellite View</option>
+                <option value="topo">Topographic Map</option>
               </select>
 
               <button
