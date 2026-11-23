@@ -32,13 +32,13 @@ const ScoutingPage = () => {
     return !isNaN(numLat) && !isNaN(numLon) && numLat >= 9.40 && numLat <= 10.50 && numLon >= 77.60 && numLon <= 78.60;
   };
 
-  // Presets for quick evaluator testing
+  // Presets for quick field location selection
   const testingPresets = [
     { label: 'Melur', lat: 9.998, lon: 78.330 },
     { label: 'Madurai East', lat: 9.955, lon: 78.185 },
     { label: 'Vadipatti', lat: 10.052, lon: 77.965 },
     { label: 'Peraiyur', lat: 9.715, lon: 77.720 },
-    { label: 'Chennai (Boundary Check)', lat: 13.082, lon: 80.270 }
+    { label: 'Thirumangalam', lat: 9.824, lon: 77.989 }
   ];
 
   // IRRI SES 0-9 Scale Descriptions
