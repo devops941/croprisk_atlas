@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, GeoJSON, CircleMarker, Popup, Tooltip, useMap } from 'react-leaflet';
 import { getDiseases, getRiskMapLayer, getObservations } from '../api/apiClient';
 
@@ -12,6 +13,7 @@ const ChangeMapView = ({ center, zoom }) => {
 };
 
 const MapPage = () => {
+  const navigate = useNavigate();
   const [diseases, setDiseases] = useState([]);
   const [selectedDiseaseId, setSelectedDiseaseId] = useState(1);
   const [assessmentDate, setAssessmentDate] = useState('2026-10-25');
@@ -512,10 +514,10 @@ const MapPage = () => {
                 <button
                   type="button"
                   className="btn btn-pro-outline w-100 btn-sm d-flex align-items-center justify-content-center gap-2"
-                  onClick={() => alert(`Dossier for ${selectedTaluk.taluk_name} loaded. You can export this in the Reports & Analytics tab.`)}
+                  onClick={() => navigate('/reports')}
                 >
-                  <i className="bi bi-file-earmark-arrow-down"></i>
-                  <span>Export Taluk Briefing Dossier</span>
+                  <i className="bi bi-file-earmark-arrow-down text-primary"></i>
+                  <span>Open Full Reports & Download PDF</span>
                 </button>
               </div>
             </div>
