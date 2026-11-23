@@ -10,13 +10,13 @@ const Footer = () => {
           <div className="d-flex align-items-center gap-3">
             <span><i className="bi bi-geo-alt text-success me-1"></i> Area of Interest: <strong>Madurai District, TN</strong></span>
             <span className="d-none d-md-inline">&bull;</span>
-            <span className="d-none d-md-inline"><i className="bi bi-layers text-primary me-1"></i> Coordinate System: <strong>WGS84 (EPSG:4326)</strong></span>
+            <span className="d-none d-md-inline"><i className="bi bi-layers text-primary me-1"></i> Coverage: <strong>11 Administrative Taluks</strong></span>
             <span className="d-none d-lg-inline">&bull;</span>
-            <span className="d-none d-lg-inline"><i className="bi bi-cpu text-info me-1"></i> Indexing: <strong>Shapely STRtree PIP</strong></span>
+            <span className="d-none d-lg-inline"><i className="bi bi-cpu text-info me-1"></i> Surveillance: <strong>Automated Spatial Indexing</strong></span>
           </div>
           <div className="d-flex align-items-center gap-2">
             <span className="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
-              <i className="bi bi-check2-circle me-1"></i> System Nominal
+              <i className="bi bi-check2-circle me-1"></i> System Active
             </span>
           </div>
         </div>
@@ -74,13 +74,13 @@ const Footer = () => {
 
           <div className="col-12 col-sm-6 col-lg-3">
             <h6 className="font-heading fw-bold text-dark text-uppercase small mb-3" style={{ letterSpacing: '0.05em' }}>
-              Academic Provenance
+              Platform Architecture
             </h6>
             <div className="p-3 rounded-3 bg-light border border-slate-200 small">
-              <div className="fw-semibold text-dark mb-1">Final Year Project Implementation</div>
-              <div className="text-secondary small mb-2">Designed with spatial block cross-validation, zero data leakage, and verified bounding polygons.</div>
+              <div className="fw-semibold text-dark mb-1">Regional Epidemiological Surveillance</div>
+              <div className="text-secondary small mb-2">Engineered with spatial block cross-validation and verified regional administrative boundaries.</div>
               <div className="d-flex align-items-center text-muted small">
-                <i className="bi bi-award-fill text-warning me-1"></i> Agricultural GIS & ML Engine
+                <i className="bi bi-shield-check text-success me-1"></i> Agricultural GIS & Intelligence Engine
               </div>
             </div>
           </div>

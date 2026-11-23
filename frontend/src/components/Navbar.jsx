@@ -26,8 +26,8 @@ const Navbar = () => {
               <span className="fw-bold text-white tracking-tight font-heading" style={{ fontSize: '1.2rem', letterSpacing: '-0.02em' }}>
                 CropRisk<span className="text-success" style={{ color: '#34d399' }}>Atlas</span>
               </span>
-              <span className="badge bg-dark border border-secondary text-light px-1 py-0" style={{ fontSize: '0.62rem', letterSpacing: '0.05em' }}>
-                PRO
+              <span className="badge bg-dark border border-secondary text-light px-2 py-0" style={{ fontSize: '0.65rem' }}>
+                v1.0
               </span>
             </div>
             <div className="text-light opacity-50 small" style={{ fontSize: '0.70rem', marginTop: '-3px', letterSpacing: '0.02em' }}>
@@ -92,12 +92,12 @@ const Navbar = () => {
             <div className="d-flex align-items-center bg-dark bg-opacity-75 border border-secondary border-opacity-50 px-3 py-1 rounded-pill">
               <span className="radar-pulse me-2"></span>
               <span className="text-light small fw-medium" style={{ fontSize: '0.78rem' }}>
-                Spatial PIP Engine: <span className="text-success fw-bold">ONLINE</span>
+                Surveillance Engine: <span className="text-success fw-bold">ACTIVE</span>
               </span>
             </div>
 
             <div className="d-none d-xxl-flex align-items-center text-light opacity-75 small px-2 py-1 bg-black bg-opacity-25 rounded border border-light border-opacity-10" style={{ fontSize: '0.75rem' }}>
-              <i className="bi bi-compass text-warning me-1"></i> EPSG:4326 | 11 Taluks
+              <i className="bi bi-geo-alt text-warning me-1"></i> Madurai District (11 Taluks)
             </div>
           </div>
         </div>

@@ -416,23 +416,6 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   }
 }
 
-@keyframes laserScan {
-  0% {
-    top: 0%;
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.9;
-  }
-  85% {
-    opacity: 0.9;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
-}
-
 @keyframes pulseGlowDanger {
   0%, 100% {
     box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
@@ -518,24 +501,6 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .stagger-3 { animation-delay: 0.18s; }
 .stagger-4 { animation-delay: 0.24s; }
 .stagger-5 { animation-delay: 0.30s; }
-
-/* 3. GIS Holographic Scanner Line for Cards */
-.gis-scan-container {
-  position: relative;
-  overflow: hidden;
-}
-
-.gis-scan-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 0%, #10b981 50%, transparent 100%);
-  box-shadow: 0 0 8px #10b981;
-  pointer-events: none;
-  z-index: 10;
-  animation: laserScan 4s ease-in-out infinite;
-}
 
 /* 4. Interactive Micro-Interactions */
 .btn:active {

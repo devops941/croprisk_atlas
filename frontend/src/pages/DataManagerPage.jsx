@@ -117,7 +117,7 @@ const DataManagerPage = () => {
         <div className="p-2 rounded bg-light border text-secondary small d-flex align-items-center gap-2">
           <i className="bi bi-folder-check text-success fs-5"></i>
           <div>
-            <div className="fw-bold text-dark">Pre-generated Test Files Available:</div>
+            <div className="fw-bold text-dark">Reference Dataset:</div>
             <div className="font-mono text-muted" style={{ fontSize: '0.72rem' }}>
               <code>data/raw/madurai_weather_samba_season.csv</code>
             </div>
@@ -193,9 +193,9 @@ const DataManagerPage = () => {
                     onChange={(e) => setWeatherProvenance(e.target.value)}
                   >
                     <option value="PUBLIC_HISTORICAL_REANALYSIS">Public Historical Reanalysis (NASA POWER / ERA5 / IMD)</option>
-                    <option value="REAL_STATION">Real Local Automatic Weather Station (AWS)</option>
-                    <option value="USER_SCOUTED">User / Field Survey Measurements</option>
-                    <option value="SYNTHETIC_DEMO">Synthetic Benchmark Data (Clearly Labeled Demo)</option>
+                    <option value="REAL_STATION">Automatic Weather Station (AWS)</option>
+                    <option value="USER_SCOUTED">Field Survey Measurements</option>
+                    <option value="SYNTHETIC_DEMO">Simulation Benchmark Dataset</option>
                   </select>
                 </div>
 
@@ -221,7 +221,7 @@ const DataManagerPage = () => {
                 <li><strong>Taluk Resolution:</strong> Coordinates or taluk names must match the 11 designated Madurai administrative subdivisions.</li>
                 <li><strong>Temperature Bounds:</strong> <code>temp_min</code> cannot exceed <code>temp_max</code>. Values checked against realistic agroclimatic ranges (-5°C to 55°C).</li>
                 <li><strong>Relative Humidity:</strong> Must fall strictly within 0% to 100%.</li>
-                <li><strong>Provenance Tracking:</strong> Transparently tags real ground survey data vs synthetic demonstration entries.</li>
+                <li><strong>Provenance Tracking:</strong> Maintains distinct lineage for ground-verified scouting, meteorological reanalysis, and simulation models.</li>
               </ul>
 
               {uploadResult && (
@@ -289,9 +289,9 @@ const DataManagerPage = () => {
                     value={obsProvenance}
                     onChange={(e) => setObsProvenance(e.target.value)}
                   >
-                    <option value="REAL_FIELD_SURVEY">Real Ground Field Survey (TNAU / Extension Office)</option>
+                    <option value="REAL_FIELD_SURVEY">Field Ground Survey (TNAU / Extension Office)</option>
                     <option value="USER_SCOUTED">Field Scout Observation Entry</option>
-                    <option value="SYNTHETIC_DEMO">Synthetic Benchmark Data (Clearly Labeled Demo)</option>
+                    <option value="SYNTHETIC_DEMO">Simulation Benchmark Dataset</option>
                   </select>
                 </div>
 

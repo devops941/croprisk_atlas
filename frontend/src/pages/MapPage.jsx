@@ -150,10 +150,10 @@ const MapPage = () => {
               <div>
                 <div className="d-flex align-items-center gap-2">
                   <h5 className="font-heading fw-bold mb-0 text-dark">Spatial Risk Cockpit</h5>
-                  <span className="badge bg-light text-secondary border small">EPSG:4326</span>
+                  <span className="badge bg-light text-secondary border small">11 Taluks</span>
                 </div>
                 <div className="small text-muted" style={{ fontSize: '0.78rem' }}>
-                  Madurai District (11 Administrative Taluks) &bull; Spatial Block Analysis
+                  Madurai District &bull; Regional Risk Surveillance
                 </div>
               </div>
             </div>

@@ -65,20 +65,17 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* Right Interactive Mockup Card with Laser Scanner & Floating Animation */}
+            {/* Right Interactive Card */}
             <div className="col-12 col-lg-5">
-              <div className="card shadow-lg border-0 p-4 bg-white rounded-4 position-relative gis-scan-container animate-float"
-                   style={{ boxShadow: '0 20px 40px -15px rgba(15, 23, 42, 0.15)' }}>
+              <div className="card shadow-lg border-0 p-4 bg-white rounded-4 position-relative"
+                   style={{ boxShadow: '0 20px 40px -15px rgba(15, 23, 42, 0.10)' }}>
                 
-                {/* Holographic Radar Scanner Line */}
-                <div className="gis-scan-line"></div>
-
                 <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
                   <div className="d-flex align-items-center gap-2">
                     <span className="radar-pulse"></span>
                     <strong className="text-dark font-heading">Real-Time Risk Stratification</strong>
                   </div>
-                  <span className="badge bg-danger text-uppercase px-2 py-1 small animate-pulse-glow-danger">Oct 25 Peak</span>
+                  <span className="badge bg-danger text-uppercase px-2 py-1 small">Oct 25 Peak</span>
                 </div>
 
                 {/* Taluk 1 */}
@@ -155,7 +152,7 @@ const LandingPage = () => {
             </div>
             <div className="col-6 col-md-3">
               <div className="fs-2 fw-bold font-mono text-info">Spatial Block</div>
-              <div className="small opacity-75 text-uppercase fw-semibold" style={{ fontSize: '0.75rem' }}>GroupKFold (Zero Leakage)</div>
+              <div className="small opacity-75 text-uppercase fw-semibold" style={{ fontSize: '0.75rem' }}>GroupKFold Validation</div>
             </div>
           </div>
         </div>
@@ -241,7 +238,7 @@ const LandingPage = () => {
                 <div className="fs-1 fw-bold text-success opacity-50 font-mono mb-2">01</div>
                 <h6 className="font-heading fw-bold text-dark mb-2">Spatial Vector Indexing</h6>
                 <p className="small text-secondary mb-0">
-                  Loads GeoJSON boundaries for all 11 Madurai taluks. Employs Shapely STRtree Point-in-Polygon indexing with zero spatial edge leakage.
+                  Integrates boundary coordinates for all 11 Madurai taluks using automated Point-in-Polygon spatial mapping.
                 </p>
               </div>
             </div>

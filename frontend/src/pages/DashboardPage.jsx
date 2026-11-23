@@ -196,7 +196,7 @@ const DashboardPage = () => {
                 </div>
                 <div className="small text-primary mt-1 d-flex align-items-center gap-1">
                   <i className="bi bi-shield-check"></i>
-                  <span>Zero Spatial Leakage</span>
+                  <span>Spatial Block Validated</span>
                 </div>
               </div>
               <div className="p-2 rounded-3 text-primary" style={{ backgroundColor: '#eff6ff' }}>

@@ -27,11 +27,11 @@ const ScoutingPage = () => {
 
   // Presets for quick evaluator testing
   const testingPresets = [
-    { label: 'Melur Paddy (Interior)', lat: 9.998, lon: 78.330 },
-    { label: 'Madurai East Zone', lat: 9.955, lon: 78.185 },
-    { label: 'Vadipatti Belt', lat: 10.052, lon: 77.965 },
-    { label: 'Peraiyur West', lat: 9.715, lon: 77.720 },
-    { label: 'Outside District (Chennai)', lat: 13.082, lon: 80.270 }
+    { label: 'Melur', lat: 9.998, lon: 78.330 },
+    { label: 'Madurai East', lat: 9.955, lon: 78.185 },
+    { label: 'Vadipatti', lat: 10.052, lon: 77.965 },
+    { label: 'Peraiyur', lat: 9.715, lon: 77.720 },
+    { label: 'Chennai (Boundary Check)', lat: 13.082, lon: 80.270 }
   ];
 
   // IRRI SES 0-9 Scale Descriptions
@@ -173,7 +173,7 @@ const ScoutingPage = () => {
                 <h5 className="font-heading fw-bold mb-0 text-white">Log New Field Observation</h5>
               </div>
               <span className="badge bg-secondary-subtle text-dark small" style={{ fontSize: '0.7rem' }}>
-                WGS84 Coordinates
+                Spatial Coordinates
               </span>
             </div>
 
@@ -183,7 +183,7 @@ const ScoutingPage = () => {
                 <div className="mb-4 p-3 bg-light rounded-3 border">
                   <div className="d-flex justify-content-between align-items-center mb-2">
                     <label className="form-label mb-0">
-                      <i className="bi bi-crosshair text-danger me-1"></i> GPS Coordinates (WGS84)
+                      <i className="bi bi-crosshair text-danger me-1"></i> Field Coordinates (Lat / Lon)
                     </label>
                     <button
                       type="button"
@@ -202,7 +202,7 @@ const ScoutingPage = () => {
 
                   {/* Preset Pills */}
                   <div className="d-flex flex-wrap gap-1 mb-3">
-                    <span className="small text-muted me-1 align-self-center" style={{ fontSize: '0.72rem' }}>Quick Test:</span>
+                    <span className="small text-muted me-1 align-self-center" style={{ fontSize: '0.72rem' }}>Preset Locations:</span>
                     {testingPresets.map((preset, idx) => (
                       <button
                         key={idx}
@@ -257,7 +257,7 @@ const ScoutingPage = () => {
                       className="btn btn-sm btn-outline-primary"
                       onClick={handleValidateCoordinates}
                     >
-                      <i className="bi bi-shield-check me-1"></i> Verify Point-in-Polygon (PIP)
+                      <i className="bi bi-shield-check me-1"></i> Verify Location
                     </button>
 
                     {validationResult && (
@@ -423,9 +423,9 @@ const ScoutingPage = () => {
                       value={provenance}
                       onChange={(e) => setProvenance(e.target.value)}
                     >
-                      <option value="USER_SCOUTED">USER_SCOUTED (Live Field Surveyor)</option>
-                      <option value="REAL_FIELD_SURVEY">REAL_FIELD_SURVEY (Validated Ground Survey)</option>
-                      <option value="PUBLIC_HISTORICAL_REANALYSIS">PUBLIC_HISTORICAL_REANALYSIS (Benchmark)</option>
+                      <option value="USER_SCOUTED">Field Scout Observation</option>
+                      <option value="REAL_FIELD_SURVEY">Validated Ground Survey</option>
+                      <option value="PUBLIC_HISTORICAL_REANALYSIS">Historical Reanalysis</option>
                     </select>
                   </div>
                 </div>

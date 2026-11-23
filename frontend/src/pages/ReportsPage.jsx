@@ -133,7 +133,7 @@ const ReportsPage = () => {
         <div>
           <div className="d-flex align-items-center gap-2 mb-1">
             <span className="badge bg-primary text-white px-2 py-1 small" style={{ fontSize: '0.72rem' }}>
-              OFFICIAL DOSSIER
+              REGIONAL DOSSIER
             </span>
             <span className="text-secondary small">&bull;</span>
             <span className="text-secondary small">Madurai 11 Administrative Taluks</span>
