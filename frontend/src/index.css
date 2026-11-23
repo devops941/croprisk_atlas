@@ -379,3 +379,195 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   color: var(--slate-600);
   margin-bottom: 0.4rem;
 }
+
+/* ========================================================
+   HIGH-PERFORMANCE CSS ANIMATIONS & MICRO-INTERACTIONS
+   ======================================================== */
+
+/* 1. Keyframe Definitions */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translate3d(24px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes laserScan {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes pulseGlowDanger {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 18px 4px rgba(239, 68, 68, 0.22);
+  }
+}
+
+@keyframes pulseGlowSuccess {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 16px 3px rgba(16, 185, 129, 0.25);
+  }
+}
+
+@keyframes scalePop {
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmerWave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes radarSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 2. Utility Animation Classes */
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+.animate-pop {
+  animation: scalePop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.animate-pulse-glow-danger {
+  animation: pulseGlowDanger 2.5s infinite;
+}
+
+.animate-pulse-glow-success {
+  animation: pulseGlowSuccess 2.5s infinite;
+}
+
+.animate-radar-spin {
+  animation: radarSpin 12s linear infinite;
+}
+
+/* Stagger Delays for Grid Items & Tables */
+.stagger-1 { animation-delay: 0.06s; }
+.stagger-2 { animation-delay: 0.12s; }
+.stagger-3 { animation-delay: 0.18s; }
+.stagger-4 { animation-delay: 0.24s; }
+.stagger-5 { animation-delay: 0.30s; }
+
+/* 3. GIS Holographic Scanner Line for Cards */
+.gis-scan-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.gis-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #10b981 50%, transparent 100%);
+  box-shadow: 0 0 8px #10b981;
+  pointer-events: none;
+  z-index: 10;
+  animation: laserScan 4s ease-in-out infinite;
+}
+
+/* 4. Interactive Micro-Interactions */
+.btn:active {
+  transform: scale(0.97) !important;
+}
+
+.btn-pro-primary:hover {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.35);
+}
+
+.card-interactive {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.card-interactive:hover {
+  transform: translateY(-4px) scale(1.004);
+  box-shadow: var(--shadow-xl);
+  border-color: #cbd5e1;
+}
+
+.progress-bar {
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.table-hover > tbody > tr {
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.table-hover > tbody > tr:hover > * {
+  background-color: #f8fafc;
+  transform: translateX(3px);
+}
+

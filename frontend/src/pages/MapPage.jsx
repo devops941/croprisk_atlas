@@ -400,9 +400,9 @@ const MapPage = () => {
           </div>
         </div>
 
-        {/* Selected Taluk Inspection Panel */}
+        {/* Selected Taluk Inspection Panel with Slide-in Animation */}
         {selectedTaluk && (
-          <div className="col-12 col-xl-4">
+          <div className="col-12 col-xl-4 animate-slide-in-right">
             <div className="card shadow-sm border-0 h-100">
               <div className="card-header bg-slate-900 text-white d-flex justify-content-between align-items-center py-3"
                    style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>

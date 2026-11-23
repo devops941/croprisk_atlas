@@ -65,17 +65,20 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* Right Interactive Mockup Card */}
+            {/* Right Interactive Mockup Card with Laser Scanner & Floating Animation */}
             <div className="col-12 col-lg-5">
-              <div className="card shadow-lg border-0 p-4 bg-white rounded-4 position-relative"
-                   style={{ boxShadow: '0 20px 40px -15px rgba(15, 23, 42, 0.12)' }}>
+              <div className="card shadow-lg border-0 p-4 bg-white rounded-4 position-relative gis-scan-container animate-float"
+                   style={{ boxShadow: '0 20px 40px -15px rgba(15, 23, 42, 0.15)' }}>
                 
+                {/* Holographic Radar Scanner Line */}
+                <div className="gis-scan-line"></div>
+
                 <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
                   <div className="d-flex align-items-center gap-2">
                     <span className="radar-pulse"></span>
                     <strong className="text-dark font-heading">Real-Time Risk Stratification</strong>
                   </div>
-                  <span className="badge bg-danger text-uppercase px-2 py-1 small">Oct 25 Peak</span>
+                  <span className="badge bg-danger text-uppercase px-2 py-1 small animate-pulse-glow-danger">Oct 25 Peak</span>
                 </div>
 
                 {/* Taluk 1 */}
@@ -233,8 +236,8 @@ const LandingPage = () => {
           </div>
 
           <div className="row g-4">
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="card h-100 p-3 border-0 bg-light">
+            <div className="col-12 col-sm-6 col-lg-3 animate-fade-in-up stagger-1">
+              <div className="card h-100 p-3 border-0 bg-light card-interactive">
                 <div className="fs-1 fw-bold text-success opacity-50 font-mono mb-2">01</div>
                 <h6 className="font-heading fw-bold text-dark mb-2">Spatial Vector Indexing</h6>
                 <p className="small text-secondary mb-0">
@@ -243,8 +246,8 @@ const LandingPage = () => {
               </div>
             </div>
 
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="card h-100 p-3 border-0 bg-light">
+            <div className="col-12 col-sm-6 col-lg-3 animate-fade-in-up stagger-2">
+              <div className="card h-100 p-3 border-0 bg-light card-interactive">
                 <div className="fs-1 fw-bold text-success opacity-50 font-mono mb-2">02</div>
                 <h6 className="font-heading fw-bold text-dark mb-2">Biometeorological Engine</h6>
                 <p className="small text-secondary mb-0">
@@ -253,8 +256,8 @@ const LandingPage = () => {
               </div>
             </div>
 
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="card h-100 p-3 border-0 bg-light">
+            <div className="col-12 col-sm-6 col-lg-3 animate-fade-in-up stagger-3">
+              <div className="card h-100 p-3 border-0 bg-light card-interactive">
                 <div className="fs-1 fw-bold text-success opacity-50 font-mono mb-2">03</div>
                 <h6 className="font-heading fw-bold text-dark mb-2">Multi-Day Risk Decay</h6>
                 <p className="small text-secondary mb-0">
@@ -263,8 +266,8 @@ const LandingPage = () => {
               </div>
             </div>
 
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="card h-100 p-3 border-0 bg-light">
+            <div className="col-12 col-sm-6 col-lg-3 animate-fade-in-up stagger-4">
+              <div className="card h-100 p-3 border-0 bg-light card-interactive">
                 <div className="fs-1 fw-bold text-success opacity-50 font-mono mb-2">04</div>
                 <h6 className="font-heading fw-bold text-dark mb-2">Actionable Field Dossiers</h6>
                 <p className="small text-secondary mb-0">

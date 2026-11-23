@@ -91,9 +91,9 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* High Risk Alert Banner (Conditional) */}
+      {/* High Risk Alert Banner (Conditional with Pulse Glow Animation) */}
       {summary && summary.high_risk_taluks_count > 0 && (
-        <div className="alert alert-danger border-0 shadow-sm d-flex align-items-center justify-content-between mb-4 p-3 rounded-3"
+        <div className="alert alert-danger border-0 shadow-sm d-flex align-items-center justify-content-between mb-4 p-3 rounded-3 animate-pulse-glow-danger animate-fade-in-up"
              style={{ background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)', borderLeft: '5px solid #ef4444' }}>
           <div className="d-flex align-items-center gap-3">
             <div className="p-2 rounded-circle bg-danger text-white d-flex align-items-center justify-content-center" style={{ width: '38px', height: '38px' }}>
@@ -114,10 +114,10 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* KPI Cards Row */}
+      {/* KPI Cards Row with Staggered Entrance */}
       <div className="row g-3 mb-4">
         {/* Metric 1 */}
-        <div className="col-12 col-sm-6 col-xl-3">
+        <div className="col-12 col-sm-6 col-xl-3 animate-fade-in-up stagger-1">
           <div className="card h-100 card-interactive p-3 border-start border-4" style={{ borderLeftColor: '#059669 !important' }}>
             <div className="d-flex justify-content-between align-items-start">
               <div>
@@ -138,7 +138,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Metric 2 */}
-        <div className="col-12 col-sm-6 col-xl-3">
+        <div className="col-12 col-sm-6 col-xl-3 animate-fade-in-up stagger-2">
           <div className="card h-100 card-interactive p-3 border-start border-4" style={{ borderLeftColor: '#ef4444 !important' }}>
             <div className="d-flex justify-content-between align-items-start">
               <div>
@@ -161,7 +161,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Metric 3 */}
-        <div className="col-12 col-sm-6 col-xl-3">
+        <div className="col-12 col-sm-6 col-xl-3 animate-fade-in-up stagger-3">
           <div className="card h-100 card-interactive p-3 border-start border-4" style={{ borderLeftColor: '#f59e0b !important' }}>
             <div className="d-flex justify-content-between align-items-start">
               <div>
@@ -184,7 +184,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Metric 4 */}
-        <div className="col-12 col-sm-6 col-xl-3">
+        <div className="col-12 col-sm-6 col-xl-3 animate-fade-in-up stagger-4">
           <div className="card h-100 card-interactive p-3 border-start border-4" style={{ borderLeftColor: '#3b82f6 !important' }}>
             <div className="d-flex justify-content-between align-items-start">
               <div>

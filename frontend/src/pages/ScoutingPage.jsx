@@ -261,13 +261,13 @@ const ScoutingPage = () => {
                     </button>
 
                     {validationResult && (
-                      <div>
+                      <div className="animate-pop">
                         {validationResult.is_valid ? (
-                          <span className="badge badge-risk-low px-2 py-1">
+                          <span className="badge badge-risk-low px-2 py-1 shadow-xs">
                             <i className="bi bi-check-circle-fill me-1"></i> Assigned Taluk: <strong>{validationResult.taluk_name}</strong>
                           </span>
                         ) : (
-                          <span className="badge badge-risk-severe px-2 py-1">
+                          <span className="badge badge-risk-severe px-2 py-1 shadow-xs animate-pulse-glow-danger">
                             <i className="bi bi-exclamation-octagon-fill me-1"></i> Outside Madurai Bounding Box
                           </span>
                         )}

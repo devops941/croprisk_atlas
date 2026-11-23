@@ -7,14 +7,14 @@ const Navbar = () => {
       <div className="container-fluid px-3 px-lg-4">
         {/* Brand with Modern SVG Insignia */}
         <NavLink className="navbar-brand d-flex align-items-center me-4 py-1 text-decoration-none" to="/">
-          <div className="me-2 p-1 rounded-3 d-flex align-items-center justify-content-center"
+          <div className="me-2 p-1 rounded-3 d-flex align-items-center justify-content-center position-relative overflow-hidden"
                style={{ 
                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', 
                  width: '38px', 
                  height: '38px',
                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.35)'
                }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="animate-radar-spin" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12A10 10 0 0 1 12 2z" strokeOpacity="0.3"></path>
               <path d="M12 6a6 6 0 0 1 6 6c0 3.314-2.686 6-6 6a6 6 0 0 1-6-6 6 6 0 0 1 6-6z" strokeOpacity="0.6"></path>
               <path d="M12 2v20M2 12h20"></path>
