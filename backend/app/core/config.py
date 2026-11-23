@@ -24,11 +24,11 @@ class Settings(BaseSettings):
     ]
     
     # Madurai District Bounding Box (Lat/Lon) for Geospatial Validation
-    # Madurai geographic span roughly 9.50°N to 10.35°N, 77.75°E to 78.50°E
+    # Madurai geographic span roughly 9.50°N to 10.35°N, 77.65°E to 78.50°E
     MADURAI_BBOX: dict = {
         "min_lat": 9.50,
         "max_lat": 10.35,
-        "min_lon": 77.75,
+        "min_lon": 77.65,
         "max_lon": 78.50,
     }
     

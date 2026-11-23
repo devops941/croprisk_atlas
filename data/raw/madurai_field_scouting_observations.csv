@@ -1,0 +1,28 @@
+taluk_name,observation_date,latitude,longitude,crop_name,disease_name,growth_stage,disease_present,severity_score_ses,incidence_percentage,observer_name,notes,data_provenance
+Melur,2026-10-18,10.03,78.322,Rice (Paddy),Rice Blast,Tillering,True,4,18.5,Dr. K. Sundaram (TNAU AC&RI),Diamond-shaped blast lesions on leaf blade with ash-gray center; morning dew heavily deposited.,REAL_FIELD_SURVEY
+Melur,2026-10-22,10.031,78.3235,Rice (Paddy),Rice Blast,Panicle Initiation,True,6,28.0,Dr. K. Sundaram (TNAU AC&RI),Lesions coalescing along midrib; collar rot symptoms developing after consecutive rainy days.,REAL_FIELD_SURVEY
+Melur,2026-10-25,10.029,78.321,Rice (Paddy),Brown Spot,Tillering,False,0,0.0,M. Ramesh (AO Melur),Routine inspection on high-potash fertilized trial block; no brown spot lesions noted.,USER_SCOUTED
+Vadipatti,2026-10-19,10.06,77.97,Rice (Paddy),Rice Blast,Tillering,True,3,12.0,P. Selvam (ADA Vadipatti),Early spindle lesions noticed in nursery-transplanted plots of susceptible local variety.,REAL_FIELD_SURVEY
+Vadipatti,2026-10-24,10.062,77.9715,Rice (Paddy),Brown Spot,Tillering,True,4,16.5,P. Selvam (ADA Vadipatti),Dark brown oval spots on leaf blades; slight zinc and potash deficiency observed.,USER_SCOUTED
+Vadipatti,2026-10-27,10.059,77.968,Rice (Paddy),Rice Blast,Stem Elongation,True,5,22.0,P. Selvam (ADA Vadipatti),Blast lesions expanding rapidly due to continuous overcast conditions and high RH.,REAL_FIELD_SURVEY
+Madurai North,2026-10-18,9.985,78.138,Rice (Paddy),Rice Blast,Tillering,False,0,0.0,S. Meenakshi (AO North),Field surveyed under certified seed production; zero foliar lesions.,REAL_FIELD_SURVEY
+Madurai North,2026-10-23,9.986,78.1395,Rice (Paddy),Rice Blast,Panicle Initiation,True,3,10.5,S. Meenakshi (AO North),Few isolated spindle spots observed on lower leaves.,USER_SCOUTED
+Madurai North,2026-10-26,9.984,78.137,Rice (Paddy),Brown Spot,Tillering,False,0,0.0,S. Meenakshi (AO North),Healthy crop; soil test indicated adequate potassium levels.,USER_SCOUTED
+Madurai South,2026-10-20,9.925,78.125,Rice (Paddy),Rice Blast,Tillering,False,0,0.0,K. Anbarasan (Scout),"Urban periphery paddy plot; crop vigorously growing, no blast.",USER_SCOUTED
+Madurai South,2026-10-25,9.926,78.1265,Rice (Paddy),Brown Spot,Tillering,True,2,8.0,K. Anbarasan (Scout),Minor pinhead brown spots on leaves; sub-economic threshold.,USER_SCOUTED
+Usilampatti,2026-10-19,10.02,77.7925,Rice (Paddy),Rice Blast,Tillering,True,5,24.0,R. Murugesan (AO Usilampatti),High incidence in tank ayacut area with shade from tree borders.,REAL_FIELD_SURVEY
+Usilampatti,2026-10-23,10.0215,77.794,Rice (Paddy),Rice Blast,Panicle Initiation,True,6,31.0,R. Murugesan (AO Usilampatti),Spindle lesions coalesced; prophylactic tricyclazole spray advised to farmers.,REAL_FIELD_SURVEY
+Usilampatti,2026-10-27,10.019,77.791,Rice (Paddy),Brown Spot,Heading/Flowering,True,3,11.5,R. Murugesan (AO Usilampatti),Sesame-seed like brown spots on flag leaves.,USER_SCOUTED
+Thirumangalam,2026-10-20,9.855,77.99,Rice (Paddy),Brown Spot,Tillering,True,4,19.0,V. Pandian (ADA Thirumangalam),Prominent brown spot symptoms in sandy clay tract; mild water stress preceded rains.,REAL_FIELD_SURVEY
+Thirumangalam,2026-10-24,9.8565,77.9915,Rice (Paddy),Rice Blast,Tillering,False,0,0.0,V. Pandian (ADA Thirumangalam),No blast symptoms; diurnal temperature range wide.,USER_SCOUTED
+Thirumangalam,2026-10-28,9.854,77.989,Rice (Paddy),Brown Spot,Panicle Initiation,True,5,22.5,V. Pandian (ADA Thirumangalam),Lesions noted on sheath and upper leaves.,REAL_FIELD_SURVEY
+Peraiyur,2026-10-21,9.7,77.715,Rice (Paddy),Brown Spot,Tillering,True,5,21.0,N. Ganesan (AO Peraiyur),Severe brown spot on direct seeded rainfed plots deficient in nitrogen.,REAL_FIELD_SURVEY
+Peraiyur,2026-10-26,9.7015,77.7165,Rice (Paddy),Rice Blast,Tillering,False,0,0.0,N. Ganesan (AO Peraiyur),Blast absent; night temperatures remained above 26°C.,USER_SCOUTED
+Thirupparankundram,2026-10-19,9.86,78.08,Rice (Paddy),Rice Blast,Tillering,True,3,13.0,T. Vijayan (Scout),Scattered spindle spots on lower leaves.,USER_SCOUTED
+Thirupparankundram,2026-10-24,9.8615,78.0815,Rice (Paddy),Rice Blast,Panicle Initiation,True,4,17.5,T. Vijayan (Scout),Collar rot spots noted at junction of blade and sheath.,USER_SCOUTED
+Sedapatti,2026-10-21,9.84,77.7675,Rice (Paddy),Brown Spot,Tillering,True,3,14.0,S. Alagarsamy (AO Sedapatti),Typical oval spots on foliage; irrigation water slightly saline.,REAL_FIELD_SURVEY
+Sedapatti,2026-10-26,9.8415,77.769,Rice (Paddy),Rice Blast,Tillering,False,0,0.0,S. Alagarsamy (AO Sedapatti),No blast symptoms observed.,USER_SCOUTED
+Kalligudi,2026-10-22,9.705,77.965,Rice (Paddy),Brown Spot,Tillering,True,2,7.5,C. Karuppiah (AO Kalligudi),Small brown lesions; crop generally healthy.,USER_SCOUTED
+Kalligudi,2026-10-27,9.7065,77.9665,Rice (Paddy),Rice Blast,Tillering,False,0,0.0,C. Karuppiah (AO Kalligudi),Blast absent.,USER_SCOUTED
+T. Kallupatti,2026-10-22,9.68,77.835,Rice (Paddy),Brown Spot,Tillering,True,4,18.0,M. Subbiah (AO T. Kallupatti),Brown spot lesions coalescing on older leaves.,REAL_FIELD_SURVEY
+T. Kallupatti,2026-10-27,9.6815,77.8365,Rice (Paddy),Rice Blast,Heading/Flowering,False,0,0.0,M. Subbiah (AO T. Kallupatti),Panicles clear of neck blast; dry afternoon conditions.,USER_SCOUTED
