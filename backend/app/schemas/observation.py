@@ -7,8 +7,8 @@ class FieldObservationCreate(BaseModel):
     crop_id: int
     disease_id: int
     observation_date: date
-    latitude: float = Field(..., ge=9.4, le=10.5, description="Latitude within Madurai region")
-    longitude: float = Field(..., ge=77.6, le=78.6, description="Longitude within Madurai region")
+    latitude: float = Field(..., ge=-90.0, le=90.0, description="Latitude in decimal degrees")
+    longitude: float = Field(..., ge=-180.0, le=180.0, description="Longitude in decimal degrees")
     growth_stage: str
     disease_present: bool = False
     severity_score_ses: int = Field(0, ge=0, le=9, description="IRRI SES 0-9 scale")

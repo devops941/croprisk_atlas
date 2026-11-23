@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { uploadWeatherCSV, uploadObservationsCSV, getUploadBatches } from '../api/apiClient';
+import { uploadWeatherCSV, uploadObservationsCSV, getUploadBatches, formatApiError } from '../api/apiClient';
 
 const DataManagerPage = () => {
   const [activeTab, setActiveTab] = useState('weather');
@@ -42,7 +42,7 @@ const DataManagerPage = () => {
       setWeatherFile(null);
       fetchBatches();
     } catch (err) {
-      alert(`Upload failed: ${err.response?.data?.detail || err.message}`);
+      alert(`Upload failed: ${formatApiError(err, 'Failed to process file upload.')}`);
     } finally {
       setUploading(false);
     }
@@ -64,7 +64,7 @@ const DataManagerPage = () => {
       setObsFile(null);
       fetchBatches();
     } catch (err) {
-      alert(`Upload failed: ${err.response?.data?.detail || err.message}`);
+      alert(`Upload failed: ${formatApiError(err, 'Failed to process observations upload.')}`);
     } finally {
       setUploading(false);
     }

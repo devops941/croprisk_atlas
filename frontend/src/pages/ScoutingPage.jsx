@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCrops, getDiseases, createObservation, getObservations, validateCoordinatePoint } from '../api/apiClient';
+import { getCrops, getDiseases, createObservation, getObservations, validateCoordinatePoint, formatApiError } from '../api/apiClient';
 
 const ScoutingPage = () => {
   const [crops, setCrops] = useState([]);
@@ -24,6 +24,13 @@ const ScoutingPage = () => {
 
   // Spatial Validation State
   const [validationResult, setValidationResult] = useState(null);
+
+  // Madurai District bounding coordinates check helper
+  const isWithinMaduraiBounds = (lat, lon) => {
+    const numLat = parseFloat(lat);
+    const numLon = parseFloat(lon);
+    return !isNaN(numLat) && !isNaN(numLon) && numLat >= 9.40 && numLat <= 10.50 && numLon >= 77.60 && numLon <= 78.60;
+  };
 
   // Presets for quick evaluator testing
   const testingPresets = [
@@ -68,9 +75,11 @@ const ScoutingPage = () => {
     init();
   }, []);
 
-  const handleValidateCoordinates = async () => {
+  const handleValidateCoordinates = async (latArg, lonArg) => {
+    const lat = latArg !== undefined ? latArg : parseFloat(latitude);
+    const lon = lonArg !== undefined ? lonArg : parseFloat(longitude);
     try {
-      const res = await validateCoordinatePoint(parseFloat(latitude), parseFloat(longitude));
+      const res = await validateCoordinatePoint(lat, lon);
       setValidationResult(res);
     } catch (err) {
       setValidationResult({ is_valid: false, error_message: 'Spatial verification engine unreachable.' });
@@ -85,10 +94,19 @@ const ScoutingPage = () => {
     setGpsLocating(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setLatitude(parseFloat(pos.coords.latitude.toFixed(5)));
-        setLongitude(parseFloat(pos.coords.longitude.toFixed(5)));
+        const lat = parseFloat(pos.coords.latitude.toFixed(4));
+        const lon = parseFloat(pos.coords.longitude.toFixed(4));
+        setLatitude(lat);
+        setLongitude(lon);
         setGpsLocating(false);
-        setValidationResult(null);
+        if (!isWithinMaduraiBounds(lat, lon)) {
+          setValidationResult({
+            is_valid: false,
+            error_message: `Your device GPS (${lat}°N, ${lon}°E) is outside Madurai District. For field testing, please click a Madurai preset (e.g. Melur or Vadipatti).`
+          });
+        } else {
+          handleValidateCoordinates(lat, lon);
+        }
       },
       (err) => {
         setGpsLocating(false);
@@ -101,19 +119,41 @@ const ScoutingPage = () => {
   const applyPreset = (preset) => {
     setLatitude(preset.lat);
     setLongitude(preset.lon);
-    setValidationResult(null);
+    if (!isWithinMaduraiBounds(preset.lat, preset.lon)) {
+      setValidationResult({
+        is_valid: false,
+        error_message: `Notice: ${preset.label} (${preset.lat}°N, ${preset.lon}°E) is deliberately outside Madurai for testing boundary rejection.`
+      });
+    } else {
+      setValidationResult({
+        is_valid: true,
+        taluk_name: preset.label
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const latNum = parseFloat(latitude);
+    const lonNum = parseFloat(longitude);
+    if (isNaN(latNum) || isNaN(lonNum)) {
+      alert('Please enter valid numeric latitude and longitude coordinates.');
+      return;
+    }
+    if (!isWithinMaduraiBounds(latNum, lonNum)) {
+      alert(
+        `Boundary Check Rejected:\nCoordinates (${latNum}°N, ${lonNum}°E) fall outside Madurai District boundaries (accepted range: 9.40°N-10.50°N, 77.60°E-78.60°E).\n\nPlease select one of the Madurai presets (e.g., Melur, Vadipatti, or Madurai East) to log observations.`
+      );
+      return;
+    }
     try {
       setLoading(true);
       const payload = {
         crop_id: parseInt(cropId),
         disease_id: parseInt(diseaseId),
         observation_date: obsDate,
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
+        latitude: latNum,
+        longitude: lonNum,
         growth_stage: growthStage,
         disease_present: diseasePresent,
         severity_score_ses: parseInt(severitySes),
@@ -125,11 +165,11 @@ const ScoutingPage = () => {
 
       const created = await createObservation(payload);
       setObservations([created, ...observations]);
-      alert(`Observation saved successfully in Taluk: ${created.taluk_name}!`);
+      alert(`Observation saved successfully in Taluk: ${created.taluk_name || 'Madurai'}!`);
       setNotes('');
       setValidationResult(null);
     } catch (err) {
-      alert(`Submission error: ${err.response?.data?.detail || err.message}`);
+      alert(`Submission error:\n${formatApiError(err, 'Failed to save field observation.')}`);
     } finally {
       setLoading(false);
     }
@@ -203,17 +243,20 @@ const ScoutingPage = () => {
                   {/* Preset Pills */}
                   <div className="d-flex flex-wrap gap-1 mb-3">
                     <span className="small text-muted me-1 align-self-center" style={{ fontSize: '0.72rem' }}>Preset Locations:</span>
-                    {testingPresets.map((preset, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        className="btn btn-sm btn-light border py-0 px-2 text-secondary"
-                        style={{ fontSize: '0.75rem' }}
-                        onClick={() => applyPreset(preset)}
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
+                    {testingPresets.map((preset, idx) => {
+                      const isActive = parseFloat(latitude) === preset.lat && parseFloat(longitude) === preset.lon;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          className={`btn btn-sm py-0 px-2 ${isActive ? 'btn-success text-white fw-bold shadow-xs' : 'btn-light border text-secondary'}`}
+                          style={{ fontSize: '0.75rem' }}
+                          onClick={() => applyPreset(preset)}
+                        >
+                          {preset.label}
+                        </button>
+                      );
+                    })}
                   </div>
 
                   <div className="row g-2 mb-2">
@@ -251,11 +294,22 @@ const ScoutingPage = () => {
                     </div>
                   </div>
 
+                  {!isWithinMaduraiBounds(latitude, longitude) && (
+                    <div className="alert alert-warning py-2 px-3 small mt-2 mb-3 d-flex align-items-center gap-2">
+                      <i className="bi bi-exclamation-triangle-fill text-warning fs-5"></i>
+                      <div className="small">
+                        <strong>Outside Madurai District Bounds:</strong> ({latitude}, {longitude}) is outside monitored limits (9.40°N–10.50°N, 77.60°E–78.60°E).
+                        <br />
+                        <span className="text-secondary">Please click a preset above (e.g. <strong>Melur</strong> or <strong>Vadipatti</strong>) to load valid coordinates.</span>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="d-flex justify-content-between align-items-center">
                     <button
                       type="button"
                       className="btn btn-sm btn-outline-primary"
-                      onClick={handleValidateCoordinates}
+                      onClick={() => handleValidateCoordinates(parseFloat(latitude), parseFloat(longitude))}
                     >
                       <i className="bi bi-shield-check me-1"></i> Verify Location
                     </button>
@@ -268,7 +322,7 @@ const ScoutingPage = () => {
                           </span>
                         ) : (
                           <span className="badge badge-risk-severe px-2 py-1 shadow-xs animate-pulse-glow-danger">
-                            <i className="bi bi-exclamation-octagon-fill me-1"></i> Outside Madurai Bounding Box
+                            <i className="bi bi-exclamation-octagon-fill me-1"></i> {validationResult.error_message || 'Outside Madurai Bounding Box'}
                           </span>
                         )}
                       </div>

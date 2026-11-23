@@ -61,6 +61,23 @@ export const uploadObservationsCSV = async (formData) => {
   return res.data;
 };
 
+export const formatApiError = (err, fallbackMsg = 'Operation failed.') => {
+  if (err.response?.data?.detail) {
+    const detail = err.response.data.detail;
+    if (Array.isArray(detail)) {
+      return detail
+        .map((d) => {
+          const field = d.loc && d.loc.length > 0 ? d.loc[d.loc.length - 1] : '';
+          return field ? `${field}: ${d.msg}` : d.msg || JSON.stringify(d);
+        })
+        .join('\n');
+    }
+    if (typeof detail === 'string') return detail;
+    return JSON.stringify(detail);
+  }
+  return err.message || fallbackMsg;
+};
+
 export const createObservation = async (payload) => {
   const res = await api.post('/data/observations', payload);
   return res.data;

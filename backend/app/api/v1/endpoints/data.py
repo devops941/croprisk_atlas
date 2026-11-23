@@ -68,7 +68,7 @@ def create_single_observation(payload: FieldObservationCreate, db: Session = Dep
         if not taluk_match:
             raise HTTPException(
                 status_code=400,
-                detail=f"Coordinates ({payload.latitude}, {payload.longitude}) are outside Madurai District."
+                detail=f"Coordinates ({payload.latitude:.4f}, {payload.longitude:.4f}) fall outside Madurai District boundaries. Only field points within Madurai's 11 taluks can be ingested."
             )
         region = db.query(Region).filter(Region.taluk_name == taluk_match["taluk_name"]).first()
         region_id = region.id if region else taluk_match["taluk_id"]
