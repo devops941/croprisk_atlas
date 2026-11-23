@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Plot from 'react-plotly.js';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { getDiseases, getTalukSummary } from '../api/apiClient';
 
 const ReportsPage = () => {
+  const location = useLocation();
   const [diseases, setDiseases] = useState([]);
-  const [selectedDiseaseId, setSelectedDiseaseId] = useState(1);
-  const [assessmentDate, setAssessmentDate] = useState('2026-10-25');
+  const [selectedDiseaseId, setSelectedDiseaseId] = useState(location.state?.diseaseId || 1);
+  const [assessmentDate, setAssessmentDate] = useState(location.state?.date || '2026-10-25');
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -87,8 +89,21 @@ const ReportsPage = () => {
       head: [["Taluk", "Risk Level", "Score", "Days", "Min T", "Avg RH", "Dominant Weather Factor"]],
       body: tableData,
       theme: "grid",
-      headStyles: { fillColor: [5, 150, 105], textColor: [255, 255, 255] },
-      styles: { fontSize: 8, cellPadding: 2 }
+      headStyles: { fillColor: [5, 150, 105], textColor: [255, 255, 255], fontStyle: 'bold' },
+      styles: { fontSize: 8, cellPadding: 2.5 },
+      didParseCell: (data) => {
+        if (data.section === 'body' && data.column.index === 1) {
+          if (data.cell.raw === 'HIGH') {
+            data.cell.styles.textColor = [220, 38, 38];
+            data.cell.styles.fontStyle = 'bold';
+          } else if (data.cell.raw === 'MEDIUM') {
+            data.cell.styles.textColor = [217, 119, 6];
+            data.cell.styles.fontStyle = 'bold';
+          } else {
+            data.cell.styles.textColor = [5, 150, 105];
+          }
+        }
+      }
     });
 
     doc.save(`CropRisk_Atlas_${diseaseName.replace(' ', '_')}_${summary.assessment_date}.pdf`);

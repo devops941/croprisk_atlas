@@ -514,7 +514,7 @@ const MapPage = () => {
                 <button
                   type="button"
                   className="btn btn-pro-outline w-100 btn-sm d-flex align-items-center justify-content-center gap-2"
-                  onClick={() => navigate('/reports')}
+                  onClick={() => navigate('/reports', { state: { date: assessmentDate, diseaseId: selectedDiseaseId } })}
                 >
                   <i className="bi bi-file-earmark-arrow-down text-primary"></i>
                   <span>Open Full Reports & Download PDF</span>
