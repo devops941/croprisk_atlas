@@ -27,7 +27,12 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-4">
             <li className="nav-item">
-              <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/">
+              <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/" end>
+                <i className="bi bi-house-door me-1"></i> Home
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/dashboard">
                 <i className="bi bi-speedometer2 me-1"></i> Dashboard
               </NavLink>
             </li>

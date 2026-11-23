@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import MapPage from './pages/MapPage';
 import ScoutingPage from './pages/ScoutingPage';
@@ -14,7 +15,8 @@ function App() {
       <Navbar />
       <main className="flex-grow-1">
         <Routes>
-          <Route path="/" element={<DashboardPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/scouting" element={<ScoutingPage />} />
           <Route path="/data" element={<DataManagerPage />} />
