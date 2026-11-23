@@ -1,0 +1,1 @@
+"""CropRisk Atlas Core Configuration"""

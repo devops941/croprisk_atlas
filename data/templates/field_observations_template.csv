@@ -1,0 +1,6 @@
+taluk_name,observation_date,latitude,longitude,crop_name,disease_name,growth_stage,disease_present,severity_score_ses,incidence_percentage,observer_name,notes,data_provenance
+Melur,2026-10-18,10.035,78.335,Rice (Paddy),Rice Blast,Tillering,True,4,18.5,Dr. K. Sundaram,Spindle-shaped lesions with grey center noticed in nursery-transplanted plots,REAL_FIELD_SURVEY
+Vadipatti,2026-10-18,10.065,77.965,Rice (Paddy),Brown Spot,Tillering,True,3,12.0,R. Meenakshi,Oval brown spots on leaf blade; mild potassium deficiency noted,USER_SCOUTED
+Madurai North,2026-10-18,9.985,78.145,Rice (Paddy),Rice Blast,Tillering,False,0,0.0,Dr. K. Sundaram,Field surveyed; no blast symptoms observed on foliage,REAL_FIELD_SURVEY
+Usilampatti,2026-10-19,9.965,77.795,Rice (Paddy),Rice Blast,Panicle Initiation,True,5,25.0,S. Murugan,Early collar rot and neck blast symptoms developing after continuous morning dew,USER_SCOUTED
+Thirumangalam,2026-10-19,9.825,77.985,Rice (Paddy),Brown Spot,Tillering,False,0,0.0,S. Murugan,Field healthy; adequate fertilization applied,USER_SCOUTED
