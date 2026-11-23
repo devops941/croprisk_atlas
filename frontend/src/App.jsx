@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import MapPage from './pages/MapPage';
@@ -11,7 +12,7 @@ import KnowledgeBasePage from './pages/KnowledgeBasePage';
 
 function App() {
   return (
-    <div className="min-vh-100 d-flex flex-column">
+    <div className="min-vh-100 d-flex flex-column bg-slate-50">
       <Navbar />
       <main className="flex-grow-1">
         <Routes>
@@ -24,11 +25,7 @@ function App() {
           <Route path="/knowledge" element={<KnowledgeBasePage />} />
         </Routes>
       </main>
-      <footer className="bg-white border-top py-3 text-center text-muted small">
-        <div className="container">
-          <span>CropRisk Atlas &copy; 2026 &bull; Final Year Project &bull; Madurai District Agricultural Intelligence &bull; Rice Blast & Brown Spot Surveillance</span>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

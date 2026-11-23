@@ -7,7 +7,7 @@ import { getDiseases, getTalukSummary } from '../api/apiClient';
 const ReportsPage = () => {
   const [diseases, setDiseases] = useState([]);
   const [selectedDiseaseId, setSelectedDiseaseId] = useState(1);
-  const [assessmentDate, setAssessmentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [assessmentDate, setAssessmentDate] = useState('2026-10-25');
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -52,17 +52,17 @@ const ReportsPage = () => {
 
     // Header Title
     doc.setFontSize(18);
-    doc.setTextColor(27, 94, 32); // Forest Green
+    doc.setTextColor(5, 150, 105); // Emerald Green
     doc.text("CropRisk Atlas - Surveillance Priority Dossier", 14, 20);
 
     doc.setFontSize(11);
     doc.setTextColor(100);
-    doc.text(`District: Madurai, Tamil Nadu  |  Date: ${summary.assessment_date}`, 14, 28);
-    doc.text(`Target Pathogen: ${diseaseName} (Rice / Paddy)`, 14, 34);
+    doc.text(`District: Madurai, Tamil Nadu  |  Assessment Date: ${summary.assessment_date}`, 14, 28);
+    doc.text(`Target Pathogen: ${diseaseName} (Rice / Oryza sativa, Samba Season)`, 14, 34);
 
     // Summary Box
-    doc.setDrawColor(200);
-    doc.setFillColor(248, 249, 250);
+    doc.setDrawColor(220);
+    doc.setFillColor(248, 250, 252);
     doc.roundedRect(14, 40, 182, 22, 3, 3, "FD");
 
     doc.setFontSize(10);
@@ -87,7 +87,7 @@ const ReportsPage = () => {
       head: [["Taluk", "Risk Level", "Score", "Days", "Min T", "Avg RH", "Dominant Weather Factor"]],
       body: tableData,
       theme: "grid",
-      headStyles: { fillColor: [46, 125, 50], textColor: [255, 255, 255] },
+      headStyles: { fillColor: [5, 150, 105], textColor: [255, 255, 255] },
       styles: { fontSize: 8, cellPadding: 2 }
     });
 
@@ -97,148 +97,275 @@ const ReportsPage = () => {
   // Plotly Bar Chart Data
   const getPlotData = () => {
     if (!summary || !summary.taluk_breakdown) return [];
-    const sorted = [...summary.taluk_breakdown].sort((a, b) => b.rule_based_score - a.rule_based_score);
-    const taluks = sorted.map((t) => t.taluk_name);
-    const scores = sorted.map((t) => t.rule_based_score * 100);
-    const colors = sorted.map((t) => (t.rule_based_level === 'HIGH' ? '#dc3545' : t.rule_based_level === 'MEDIUM' ? '#ffc107' : '#28a745'));
+    const sorted = [...summary.taluk_breakdown].sort((a, b) => a.rule_based_score - b.rule_based_score);
+
+    const talukNames = sorted.map((t) => t.taluk_name);
+    const scores = sorted.map((t) => +(t.rule_based_score * 100).toFixed(1));
+    const colors = sorted.map((t) => {
+      if (t.rule_based_level === 'HIGH') return '#ef4444';
+      if (t.rule_based_level === 'MEDIUM') return '#f59e0b';
+      return '#10b981';
+    });
 
     return [
       {
-        x: taluks,
-        y: scores,
+        y: talukNames,
+        x: scores,
         type: 'bar',
-        marker: { color: colors },
-        text: scores.map((s) => `${s.toFixed(0)}%`),
-        textposition: 'auto'
+        orientation: 'h',
+        marker: {
+          color: colors,
+          line: { color: '#ffffff', width: 1.5 }
+        },
+        text: scores.map((s) => `${s}%`),
+        textposition: 'auto',
+        hoverinfo: 'y+x'
       }
     ];
   };
 
+  const currentDisease = diseases.find((d) => d.id === selectedDiseaseId);
+
   return (
-    <div className="container-fluid px-4 py-4">
-      {/* Header */}
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-2 border-bottom">
+    <div className="container-fluid px-3 px-lg-4 py-4">
+      {/* Header and Controls */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom gap-3">
         <div>
-          <h2 className="fw-bold mb-1 text-dark">Area-Wise Surveillance Reports & Dossier Export</h2>
-          <p className="text-muted mb-0">
-            District breakdown matrix &bull; Comparative risk bar charts &bull; Formatted CSV and PDF export
+          <div className="d-flex align-items-center gap-2 mb-1">
+            <span className="badge bg-primary text-white px-2 py-1 small" style={{ fontSize: '0.72rem' }}>
+              OFFICIAL DOSSIER
+            </span>
+            <span className="text-secondary small">&bull;</span>
+            <span className="text-secondary small">Madurai 11 Administrative Taluks</span>
+          </div>
+          <h2 className="font-heading fw-bold mb-1 text-dark">
+            Epidemiological Reports & Squad Briefing Dossiers
+          </h2>
+          <p className="text-muted small mb-0">
+            Export standardized taluk risk rankings, microclimate factor breakdowns, and official PDF advisories.
           </p>
         </div>
-        <div className="d-flex gap-2 mt-3 mt-md-0">
-          <button className="btn btn-sm btn-outline-success" onClick={handleDownloadCSV}>
-            <i className="bi bi-filetype-csv me-1"></i> Export CSV
+
+        {/* Action Buttons */}
+        <div className="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            className="btn btn-pro-outline btn-sm d-flex align-items-center gap-1"
+            onClick={handleDownloadCSV}
+            disabled={!summary}
+          >
+            <i className="bi bi-filetype-csv text-success"></i>
+            <span>Export CSV</span>
           </button>
-          <button className="btn btn-sm btn-danger" onClick={handleDownloadPDF}>
-            <i className="bi bi-file-earmark-pdf-fill me-1"></i> Export PDF Report
+          <button
+            type="button"
+            className="btn btn-pro-primary btn-sm d-flex align-items-center gap-1"
+            onClick={handleDownloadPDF}
+            disabled={!summary}
+          >
+            <i className="bi bi-file-earmark-pdf"></i>
+            <span>Download Official PDF Dossier</span>
           </button>
         </div>
       </div>
 
-      {/* Filter Controls */}
-      <div className="card shadow-sm border-0 p-3 mb-4 bg-white">
+      {/* Filter Toolbar Card */}
+      <div className="card shadow-sm border-0 mb-4 bg-white p-3">
         <div className="row g-3 align-items-center">
-          <div className="col-12 col-md-4">
-            <label className="form-label small fw-bold text-secondary mb-1">Select Disease</label>
-            <select
-              className="form-select form-select-sm"
-              value={selectedDiseaseId}
-              onChange={(e) => setSelectedDiseaseId(Number(e.target.value))}
-            >
+          <div className="col-12 col-md-5">
+            <label className="form-label small fw-bold text-secondary mb-1">Target Pathogen</label>
+            <div className="btn-group w-100">
               {diseases.map((d) => (
-                <option key={d.id} value={d.id}>{d.name}</option>
+                <button
+                  key={d.id}
+                  type="button"
+                  className={`btn btn-sm ${selectedDiseaseId === d.id ? 'btn-pro-primary fw-semibold' : 'btn-pro-outline'}`}
+                  onClick={() => setSelectedDiseaseId(d.id)}
+                >
+                  <i className="bi bi-virus me-1"></i> {d.name}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
+
           <div className="col-12 col-md-4">
             <label className="form-label small fw-bold text-secondary mb-1">Assessment Date</label>
-            <input
-              type="date"
-              className="form-control form-control-sm"
-              value={assessmentDate}
-              onChange={(e) => setAssessmentDate(e.target.value)}
-            />
+            <div className="input-group input-group-sm">
+              <input
+                type="date"
+                className="form-control"
+                value={assessmentDate}
+                onChange={(e) => setAssessmentDate(e.target.value)}
+              />
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => setAssessmentDate('2026-10-25')}
+                title="Samba Peak Date"
+              >
+                Samba Peak
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => setAssessmentDate(new Date().toISOString().split('T')[0])}
+                title="Today"
+              >
+                Today
+              </button>
+            </div>
           </div>
-          <div className="col-12 col-md-4 text-md-end pt-3 pt-md-0">
-            {loading && <span className="spinner-border spinner-border-sm text-success me-2"></span>}
-            <button className="btn btn-sm btn-success" onClick={fetchSummary}>
-              <i className="bi bi-arrow-clockwise me-1"></i> Refresh Matrix
-            </button>
+
+          <div className="col-12 col-md-3 text-md-end pt-3 pt-md-0">
+            {loading && (
+              <span className="spinner-border spinner-border-sm text-success me-2" role="status"></span>
+            )}
+            <span className="badge bg-light text-secondary border p-2">
+              <i className="bi bi-calendar3 me-1"></i> Active: <strong>{assessmentDate}</strong>
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Plotly Chart */}
-      <div className="card shadow-sm border-0 p-3 mb-4">
-        <h5 className="fw-bold text-dark mb-3">
-          <i className="bi bi-bar-chart-fill text-success me-2"></i>
-          Comparative Taluk Vulnerability Index ({summary?.disease_name})
-        </h5>
-        <div style={{ height: '380px' }}>
-          <Plot
-            data={getPlotData()}
-            layout={{
-              autosize: true,
-              margin: { l: 40, r: 20, t: 30, b: 80 },
-              yaxis: { title: 'Risk Score (%)', range: [0, 100] },
-              shapes: [
-                {
-                  type: 'line',
-                  x0: -0.5,
-                  x1: 10.5,
-                  y0: 70,
-                  y1: 70,
-                  line: { color: '#dc3545', width: 2, dash: 'dot' }
-                },
-                {
-                  type: 'line',
-                  x0: -0.5,
-                  x1: 10.5,
-                  y0: 35,
-                  y1: 35,
-                  line: { color: '#ffc107', width: 2, dash: 'dot' }
-                }
-              ]
-            }}
-            useResizeHandler={true}
-            style={{ width: '100%', height: '100%' }}
-          />
+      {/* KPI Cards Row for Selected Assessment */}
+      {summary && (
+        <div className="row g-3 mb-4">
+          <div className="col-6 col-md-3">
+            <div className="card p-3 border-0 bg-light">
+              <div className="text-muted small text-uppercase fw-semibold" style={{ fontSize: '0.7rem' }}>High-Risk Taluks</div>
+              <div className="fs-3 fw-bold text-danger font-mono">{summary.high_risk_taluks_count}</div>
+              <div className="small text-danger" style={{ fontSize: '0.75rem' }}>Immediate Squad Priority</div>
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <div className="card p-3 border-0 bg-light">
+              <div className="text-muted small text-uppercase fw-semibold" style={{ fontSize: '0.7rem' }}>Medium Vulnerability</div>
+              <div className="fs-3 fw-bold text-warning font-mono">{summary.medium_risk_taluks_count}</div>
+              <div className="small text-warning" style={{ fontSize: '0.75rem' }}>Elevated Watch List</div>
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <div className="card p-3 border-0 bg-light">
+              <div className="text-muted small text-uppercase fw-semibold" style={{ fontSize: '0.7rem' }}>Low / Suppressive</div>
+              <div className="fs-3 fw-bold text-success font-mono">{summary.low_risk_taluks_count}</div>
+              <div className="small text-success" style={{ fontSize: '0.75rem' }}>Routine Surveillance</div>
+            </div>
+          </div>
+          <div className="col-6 col-md-3">
+            <div className="card p-3 border-0 bg-light">
+              <div className="text-muted small text-uppercase fw-semibold" style={{ fontSize: '0.7rem' }}>District Average Risk</div>
+              <div className="fs-3 fw-bold text-dark font-mono">{(summary.district_average_score * 100).toFixed(1)}%</div>
+              <div className="small text-muted" style={{ fontSize: '0.75rem' }}>5-Day Decay Weighted</div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Full Breakdown Table */}
-      <div className="card shadow-sm border-0 p-3">
-        <h5 className="fw-bold text-dark mb-3">Detailed Taluk Risk Matrix</h5>
-        <div className="table-responsive">
-          <table className="table table-hover align-middle mb-0">
-            <thead className="table-light small">
-              <tr>
-                <th>Taluk</th>
-                <th>Surveillance Priority</th>
-                <th>Calculated Score</th>
-                <th>Consecutive Days</th>
-                <th>Window Min Temp</th>
-                <th>Window Mean RH</th>
-                <th>Primary Environmental Factor</th>
-              </tr>
-            </thead>
-            <tbody>
-              {summary?.taluk_breakdown?.map((t) => (
-                <tr key={t.taluk_name}>
-                  <td className="fw-bold text-dark">{t.taluk_name}</td>
-                  <td>
-                    <span className={`badge ${t.rule_based_level === 'HIGH' ? 'bg-danger' : t.rule_based_level === 'MEDIUM' ? 'bg-warning text-dark' : 'bg-success'}`}>
-                      {t.rule_based_level}
-                    </span>
-                  </td>
-                  <td>{(t.rule_based_score * 100).toFixed(1)}%</td>
-                  <td>{t.consecutive_conducive_days} days</td>
-                  <td>{t.avg_temp_min ? `${t.avg_temp_min}°C` : 'N/A'}</td>
-                  <td>{t.avg_rh ? `${t.avg_rh}%` : 'N/A'}</td>
-                  <td className="small text-muted">{t.primary_risk_factor}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Main Grid: Comparative Plotly Chart & Table */}
+      <div className="row g-4">
+        {/* Left: Plotly Chart */}
+        <div className="col-12 col-xl-6">
+          <div className="card shadow-sm border-0 h-100">
+            <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 className="font-heading fw-bold mb-0 text-dark">
+                  <i className="bi bi-bar-chart-steps text-success me-2"></i>
+                  Taluk Risk Ranking Comparison
+                </h5>
+                <span className="small text-muted" style={{ fontSize: '0.75rem' }}>
+                  Relative vulnerability ranked from highest to lowest
+                </span>
+              </div>
+            </div>
+
+            <div className="card-body p-3">
+              {summary && summary.taluk_breakdown ? (
+                <div style={{ width: '100%', minHeight: '440px' }}>
+                  <Plot
+                    data={getPlotData()}
+                    layout={{
+                      autosize: true,
+                      margin: { l: 120, r: 40, t: 20, b: 40 },
+                      xaxis: {
+                        title: 'Risk Score (%)',
+                        range: [0, 100],
+                        gridcolor: '#f1f5f9'
+                      },
+                      yaxis: {
+                        automargin: true
+                      },
+                      font: {
+                        family: 'Inter, sans-serif',
+                        size: 12,
+                        color: '#334155'
+                      },
+                      paper_bgcolor: 'transparent',
+                      plot_bgcolor: 'transparent'
+                    }}
+                    useResizeHandler={true}
+                    style={{ width: '100%', height: '100%' }}
+                    config={{ displayModeBar: false }}
+                  />
+                </div>
+              ) : (
+                <div className="p-5 text-center text-muted">Loading chart data...</div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Detailed Table */}
+        <div className="col-12 col-xl-6">
+          <div className="card shadow-sm border-0 h-100">
+            <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 className="font-heading fw-bold mb-0 text-dark">
+                  <i className="bi bi-table text-primary me-2"></i>
+                  Taluk Vulnerability Dossier Table
+                </h5>
+                <span className="small text-muted" style={{ fontSize: '0.75rem' }}>
+                  Microclimate drivers and consecutive conducive days
+                </span>
+              </div>
+            </div>
+
+            <div className="card-body p-0">
+              <div className="table-responsive" style={{ maxHeight: '480px' }}>
+                <table className="table table-hover align-middle mb-0">
+                  <thead className="sticky-top bg-light">
+                    <tr>
+                      <th>Taluk</th>
+                      <th>Priority</th>
+                      <th>Score</th>
+                      <th>Min T / RH</th>
+                      <th>Dominant Driver</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {summary?.taluk_breakdown?.map((t) => (
+                      <tr key={t.taluk_name}>
+                        <td className="fw-semibold text-dark">{t.taluk_name}</td>
+                        <td>
+                          <span className={`badge ${t.rule_based_level === 'HIGH' ? 'badge-risk-severe' : t.rule_based_level === 'MEDIUM' ? 'badge-risk-moderate' : 'badge-risk-low'}`}>
+                            {t.rule_based_level}
+                          </span>
+                        </td>
+                        <td>
+                          <strong className="font-mono text-dark">{(t.rule_based_score * 100).toFixed(1)}%</strong>
+                        </td>
+                        <td className="small text-secondary">
+                          {t.avg_temp_min ? `${t.avg_temp_min}°C` : 'N/A'} / {t.avg_rh ? `${t.avg_rh}%` : 'N/A'}
+                        </td>
+                        <td className="small text-secondary text-truncate" style={{ maxWidth: '180px' }}>
+                          {t.primary_risk_factor}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

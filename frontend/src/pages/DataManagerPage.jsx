@@ -94,41 +94,58 @@ const DataManagerPage = () => {
   };
 
   return (
-    <div className="container px-4 py-4">
-      <div className="mb-4 pb-2 border-bottom">
-        <h2 className="fw-bold mb-1 text-dark">Spatial & Field Data Ingestion Hub</h2>
-        <p className="text-muted mb-0">
-          Upload and validate CSV datasets &bull; Strict integrity validation &bull; Audit trail logging
-        </p>
+    <div className="container-fluid px-3 px-lg-4 py-4">
+      {/* Header */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom gap-3">
+        <div>
+          <div className="d-flex align-items-center gap-2 mb-1">
+            <span className="badge bg-secondary text-white px-2 py-1 small" style={{ fontSize: '0.72rem' }}>
+              DATA INGESTION PIPELINE
+            </span>
+            <span className="text-secondary small">&bull;</span>
+            <span className="text-secondary small">Automated Schema & Spatial Validation</span>
+          </div>
+          <h2 className="font-heading fw-bold mb-1 text-dark">
+            Spatial & Field Data Ingestion Hub
+          </h2>
+          <p className="text-muted small mb-0">
+            Upload CSV datasets with strict row-level auditing, point-in-polygon verification, and physical bounds checking.
+          </p>
+        </div>
+
+        {/* Prepared Datasets Notice */}
+        <div className="p-2 rounded bg-light border text-secondary small d-flex align-items-center gap-2">
+          <i className="bi bi-folder-check text-success fs-5"></i>
+          <div>
+            <div className="fw-bold text-dark">Pre-generated Test Files Available:</div>
+            <div className="font-mono text-muted" style={{ fontSize: '0.72rem' }}>
+              <code>data/raw/madurai_weather_samba_season.csv</code>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Tabs */}
-      <ul className="nav nav-pills mb-4">
-        <li className="nav-item">
-          <button
-            className={`nav-link ${activeTab === 'weather' ? 'active bg-success' : 'text-secondary'}`}
-            onClick={() => { setActiveTab('weather'); setUploadResult(null); }}
-          >
-            <i className="bi bi-cloud-sun me-1"></i> Weather CSV Ingestion
-          </button>
-        </li>
-        <li className="nav-item ms-2">
-          <button
-            className={`nav-link ${activeTab === 'observation' ? 'active bg-success' : 'text-secondary'}`}
-            onClick={() => { setActiveTab('observation'); setUploadResult(null); }}
-          >
-            <i className="bi bi-clipboard2-pulse me-1"></i> Field Scouting CSV Ingestion
-          </button>
-        </li>
-        <li className="nav-item ms-2">
-          <button
-            className={`nav-link ${activeTab === 'history' ? 'active bg-success' : 'text-secondary'}`}
-            onClick={() => { setActiveTab('history'); setUploadResult(null); }}
-          >
-            <i className="bi bi-clock-history me-1"></i> Upload Audit History ({batchHistory.length})
-          </button>
-        </li>
-      </ul>
+      <div className="d-flex gap-2 mb-4">
+        <button
+          className={`btn btn-sm ${activeTab === 'weather' ? 'btn-pro-primary fw-semibold' : 'btn-pro-outline'}`}
+          onClick={() => { setActiveTab('weather'); setUploadResult(null); }}
+        >
+          <i className="bi bi-cloud-sun me-1"></i> Weather CSV Ingestion
+        </button>
+        <button
+          className={`btn btn-sm ${activeTab === 'observation' ? 'btn-pro-primary fw-semibold' : 'btn-pro-outline'}`}
+          onClick={() => { setActiveTab('observation'); setUploadResult(null); }}
+        >
+          <i className="bi bi-clipboard2-pulse me-1"></i> Field Scouting Ingestion
+        </button>
+        <button
+          className={`btn btn-sm ${activeTab === 'history' ? 'btn-pro-primary fw-semibold' : 'btn-pro-outline'}`}
+          onClick={() => { setActiveTab('history'); setUploadResult(null); }}
+        >
+          <i className="bi bi-clock-history me-1"></i> Upload Audit History ({batchHistory.length})
+        </button>
+      </div>
 
       {/* Weather Upload Tab */}
       {activeTab === 'weather' && (
@@ -136,19 +153,19 @@ const DataManagerPage = () => {
           <div className="col-12 col-lg-6">
             <div className="card shadow-sm border-0 p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="fw-bold mb-0">Upload Weather Dataset</h5>
+                <h5 className="font-heading fw-bold mb-0 text-dark">Upload Weather Dataset</h5>
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline-success"
+                  className="btn btn-sm btn-outline-secondary"
                   onClick={() => downloadSampleTemplate('weather')}
                 >
-                  <i className="bi bi-download me-1"></i> Download Template
+                  <i className="bi bi-download me-1"></i> CSV Template
                 </button>
               </div>
 
               <form onSubmit={handleWeatherSubmit}>
                 <div className="mb-3">
-                  <label className="form-label small fw-semibold">Select CSV File</label>
+                  <label className="form-label">Select Weather CSV File</label>
                   <input
                     type="file"
                     className="form-control"
@@ -156,11 +173,13 @@ const DataManagerPage = () => {
                     onChange={(e) => setWeatherFile(e.target.files[0])}
                     required
                   />
-                  <div className="form-text">Must contain taluk_name, record_date, temp_max, temp_min, temp_avg, rh_avg</div>
+                  <div className="form-text small text-muted">
+                    Must include: <code>taluk_name, record_date, temp_max, temp_min, temp_avg, rh_avg</code>
+                  </div>
                 </div>
 
                 <div className="mb-4">
-                  <label className="form-label small fw-semibold">Data Provenance Attribution</label>
+                  <label className="form-label">Data Provenance Attribution</label>
                   <select
                     className="form-select"
                     value={weatherProvenance}
@@ -175,7 +194,7 @@ const DataManagerPage = () => {
 
                 <button
                   type="submit"
-                  className="btn btn-success w-100 py-2 fw-semibold"
+                  className="btn btn-pro-primary w-100 py-2 fw-semibold"
                   disabled={uploading || !weatherFile}
                 >
                   {uploading ? (
@@ -190,16 +209,16 @@ const DataManagerPage = () => {
 
           <div className="col-12 col-lg-6">
             <div className="card shadow-sm border-0 p-4 h-100 bg-light">
-              <h6 className="fw-bold text-dark mb-2">Ingestion & Validation Rules</h6>
-              <ul className="small text-secondary mb-3">
-                <li className="mb-1"><strong>Taluk Resolution:</strong> Coordinates or taluk names must match the 11 designated Madurai subdivisions.</li>
-                <li className="mb-1"><strong>Temperature Boundaries:</strong> <code>temp_min</code> cannot exceed <code>temp_max</code>. Values checked against reasonable agro-climatic ranges (-5°C to 55°C).</li>
-                <li className="mb-1"><strong>Humidity Bounds:</strong> Relative humidity must fall strictly within 0% to 100%.</li>
-                <li className="mb-1"><strong>Provenance Tracking:</strong> Strictly separates ground-verified observations from synthetic demonstration data.</li>
+              <h6 className="font-heading fw-bold text-dark mb-2">Ingestion & Validation Rules</h6>
+              <ul className="small text-secondary mb-3 d-flex flex-column gap-2">
+                <li><strong>Taluk Resolution:</strong> Coordinates or taluk names must match the 11 designated Madurai administrative subdivisions.</li>
+                <li><strong>Temperature Bounds:</strong> <code>temp_min</code> cannot exceed <code>temp_max</code>. Values checked against realistic agroclimatic ranges (-5°C to 55°C).</li>
+                <li><strong>Relative Humidity:</strong> Must fall strictly within 0% to 100%.</li>
+                <li><strong>Provenance Tracking:</strong> Transparently tags real ground survey data vs synthetic demonstration entries.</li>
               </ul>
 
               {uploadResult && (
-                <div className={`alert ${uploadResult.status === 'SUCCESS' ? 'alert-success' : uploadResult.status === 'PARTIAL' ? 'alert-warning' : 'alert-danger'} p-3 mt-auto`}>
+                <div className={`alert ${uploadResult.status === 'SUCCESS' ? 'alert-success' : uploadResult.status === 'PARTIAL' ? 'alert-warning' : 'alert-danger'} p-3 mt-auto mb-0`}>
                   <div className="fw-bold mb-1">
                     Upload Batch #{uploadResult.batch_id} &bull; Status: {uploadResult.status}
                   </div>
@@ -208,7 +227,7 @@ const DataManagerPage = () => {
                   </div>
                   {uploadResult.rejected_rows > 0 && (
                     <div className="small text-danger mt-1">
-                      <strong>Rejected Records:</strong> {uploadResult.rejected_rows} (See errors below)
+                      <strong>Rejected Records:</strong> {uploadResult.rejected_rows} (See error log below)
                     </div>
                   )}
                 </div>
@@ -224,19 +243,19 @@ const DataManagerPage = () => {
           <div className="col-12 col-lg-6">
             <div className="card shadow-sm border-0 p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="fw-bold mb-0">Upload Field Scouting Observations</h5>
+                <h5 className="font-heading fw-bold mb-0 text-dark">Upload Field Scouting Observations</h5>
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline-success"
+                  className="btn btn-sm btn-outline-secondary"
                   onClick={() => downloadSampleTemplate('observation')}
                 >
-                  <i className="bi bi-download me-1"></i> Download Template
+                  <i className="bi bi-download me-1"></i> CSV Template
                 </button>
               </div>
 
               <form onSubmit={handleObsSubmit}>
                 <div className="mb-3">
-                  <label className="form-label small fw-semibold">Select CSV File</label>
+                  <label className="form-label">Select Observations CSV File</label>
                   <input
                     type="file"
                     className="form-control"
@@ -244,11 +263,13 @@ const DataManagerPage = () => {
                     onChange={(e) => setObsFile(e.target.files[0])}
                     required
                   />
-                  <div className="form-text">Must contain observation_date, latitude, longitude, crop_name, disease_name, severity_score_ses</div>
+                  <div className="form-text small text-muted">
+                    Must include: <code>observation_date, latitude, longitude, crop_name, disease_name, severity_score_ses</code>
+                  </div>
                 </div>
 
                 <div className="mb-4">
-                  <label className="form-label small fw-semibold">Data Provenance Attribution</label>
+                  <label className="form-label">Data Provenance Attribution</label>
                   <select
                     className="form-select"
                     value={obsProvenance}
@@ -262,7 +283,7 @@ const DataManagerPage = () => {
 
                 <button
                   type="submit"
-                  className="btn btn-success w-100 py-2 fw-semibold"
+                  className="btn btn-pro-primary w-100 py-2 fw-semibold"
                   disabled={uploading || !obsFile}
                 >
                   {uploading ? (
@@ -277,13 +298,13 @@ const DataManagerPage = () => {
 
           <div className="col-12 col-lg-6">
             <div className="card shadow-sm border-0 p-4 h-100 bg-light">
-              <h6 className="fw-bold text-dark mb-2">Spatial Point-in-Polygon Verification</h6>
+              <h6 className="font-heading fw-bold text-dark mb-2">Spatial Point-in-Polygon Verification</h6>
               <p className="small text-secondary mb-3">
-                Uploaded latitude and longitude coordinates are processed through the Shapely <code>STRtree</code> spatial index. Any coordinates falling outside Madurai District boundary are rejected with an explicit rejection log.
+                Uploaded latitude and longitude coordinates are indexed through the Shapely <code>STRtree</code> Point-in-Polygon engine. Any coordinates falling outside Madurai District boundary are rejected with an explicit rejection log.
               </p>
 
               {uploadResult && (
-                <div className={`alert ${uploadResult.status === 'SUCCESS' ? 'alert-success' : uploadResult.status === 'PARTIAL' ? 'alert-warning' : 'alert-danger'} p-3 mt-auto`}>
+                <div className={`alert ${uploadResult.status === 'SUCCESS' ? 'alert-success' : uploadResult.status === 'PARTIAL' ? 'alert-warning' : 'alert-danger'} p-3 mt-auto mb-0`}>
                   <div className="fw-bold mb-1">
                     Upload Batch #{uploadResult.batch_id} &bull; Status: {uploadResult.status}
                   </div>
@@ -292,7 +313,7 @@ const DataManagerPage = () => {
                   </div>
                   {uploadResult.rejected_rows > 0 && (
                     <div className="small text-danger mt-1">
-                      <strong>Rejected Records:</strong> {uploadResult.rejected_rows} (Spatial or SES violations)
+                      <strong>Rejected Records:</strong> {uploadResult.rejected_rows} (Spatial or SES score violations)
                     </div>
                   )}
                 </div>
@@ -305,10 +326,10 @@ const DataManagerPage = () => {
       {/* Batch History Tab */}
       {activeTab === 'history' && (
         <div className="card shadow-sm border-0 p-4">
-          <h5 className="fw-bold mb-3">Dataset Upload Audit Log</h5>
+          <h5 className="font-heading fw-bold mb-3 text-dark">Dataset Upload Audit Log</h5>
           <div className="table-responsive">
             <table className="table table-hover align-middle mb-0">
-              <thead className="table-light small">
+              <thead>
                 <tr>
                   <th>Batch ID</th>
                   <th>File Name</th>
@@ -329,19 +350,19 @@ const DataManagerPage = () => {
                 ) : (
                   batchHistory.map((b) => (
                     <tr key={b.id}>
-                      <td className="fw-bold">#{b.id}</td>
+                      <td className="fw-bold font-mono">#{b.id}</td>
                       <td>{b.file_name}</td>
-                      <td><span className="badge bg-light text-dark">{b.batch_type}</span></td>
+                      <td><span className="badge bg-light text-dark border">{b.batch_type}</span></td>
                       <td>{b.total_records}</td>
-                      <td><span className="badge bg-success">{b.accepted_records}</span></td>
+                      <td><span className="badge badge-risk-low">{b.accepted_records}</span></td>
                       <td>
                         {b.rejected_records > 0 ? (
-                          <span className="badge bg-danger">{b.rejected_records}</span>
+                          <span className="badge badge-risk-severe">{b.rejected_records}</span>
                         ) : (
-                          <span className="badge bg-secondary">0</span>
+                          <span className="badge bg-light text-muted border">0</span>
                         )}
                       </td>
-                      <td><span className="small text-muted">{b.data_provenance}</span></td>
+                      <td><span className="small text-muted font-mono" style={{ fontSize: '0.72rem' }}>{b.data_provenance}</span></td>
                       <td className="small text-muted">{new Date(b.uploaded_at).toLocaleString()}</td>
                       <td>
                         {b.errors && b.errors.length > 0 && (
@@ -362,10 +383,10 @@ const DataManagerPage = () => {
         </div>
       )}
 
-      {/* Upload Errors Modal / Alert Box */}
+      {/* Row Error Log Box */}
       {uploadResult && uploadResult.errors && uploadResult.errors.length > 0 && (
         <div className="card shadow-sm border-danger border-2 mt-4 p-4">
-          <h6 className="fw-bold text-danger mb-2">
+          <h6 className="font-heading fw-bold text-danger mb-2">
             <i className="bi bi-exclamation-triangle-fill me-1"></i> Row Rejection Details ({uploadResult.errors.length} Errors Detected)
           </h6>
           <div className="table-responsive" style={{ maxHeight: '250px' }}>
@@ -397,7 +418,7 @@ const DataManagerPage = () => {
           <div className="modal-dialog modal-lg">
             <div className="modal-content">
               <div className="modal-header bg-danger text-white">
-                <h5 className="modal-title">Batch Rejection Logs</h5>
+                <h5 className="modal-title font-heading">Batch Rejection Logs</h5>
                 <button type="button" className="btn-close btn-close-white" onClick={() => setSelectedBatchErrors(null)}></button>
               </div>
               <div className="modal-body">

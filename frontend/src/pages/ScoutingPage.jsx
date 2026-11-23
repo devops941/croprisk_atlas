@@ -6,10 +6,11 @@ const ScoutingPage = () => {
   const [diseases, setDiseases] = useState([]);
   const [observations, setObservations] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [gpsLocating, setGpsLocating] = useState(false);
 
   // Form State
-  const [latitude, setLatitude] = useState(9.985);
-  const [longitude, setLongitude] = useState(78.145);
+  const [latitude, setLatitude] = useState(9.998);
+  const [longitude, setLongitude] = useState(78.330);
   const [cropId, setCropId] = useState('');
   const [diseaseId, setDiseaseId] = useState('');
   const [growthStage, setGrowthStage] = useState('Tillering');
@@ -23,6 +24,29 @@ const ScoutingPage = () => {
 
   // Spatial Validation State
   const [validationResult, setValidationResult] = useState(null);
+
+  // Presets for quick evaluator testing
+  const testingPresets = [
+    { label: 'Melur Paddy (Interior)', lat: 9.998, lon: 78.330 },
+    { label: 'Madurai East Zone', lat: 9.955, lon: 78.185 },
+    { label: 'Vadipatti Belt', lat: 10.052, lon: 77.965 },
+    { label: 'Peraiyur West', lat: 9.715, lon: 77.720 },
+    { label: 'Outside District (Chennai)', lat: 13.082, lon: 80.270 }
+  ];
+
+  // IRRI SES 0-9 Scale Descriptions
+  const irriScaleDescriptions = {
+    0: { label: 'Healthy / Immune', desc: 'No symptoms or lesions observed. Clean foliage.', color: 'text-success' },
+    1: { label: 'Resistant (Very Mild)', desc: 'Small brown specks of pin-point size without sporulation.', color: 'text-success' },
+    2: { label: 'Moderately Resistant', desc: 'Slightly larger brown specks, restricted lesions.', color: 'text-info' },
+    3: { label: 'Mild Infection', desc: 'Small roundish necrotic lesions with greyish center, <5% leaf area.', color: 'text-info' },
+    4: { label: 'Moderate Symptoms', desc: 'Spindle-shaped blast spots typical of pathogen, 5-10% leaf area.', color: 'text-warning' },
+    5: { label: 'Moderate-High Severity', desc: 'Spindle-shaped lesions coalescing, 11-25% leaf area affected.', color: 'text-warning' },
+    6: { label: 'High Infection', desc: 'Numerous coalescing lesions on top leaves, 26-50% area necrosis.', color: 'text-danger' },
+    7: { label: 'Severe Blight', desc: 'Lesions covering 51-75% leaf area. Rapid chlorosis.', color: 'text-danger' },
+    8: { label: 'Very Severe Blight', desc: 'Extensive coalescence, leaves largely dead or withered.', color: 'text-danger' },
+    9: { label: 'Total Crop Collapse', desc: 'Complete leaf necrosis, lodging, plant death.', color: 'text-danger' }
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -49,8 +73,35 @@ const ScoutingPage = () => {
       const res = await validateCoordinatePoint(parseFloat(latitude), parseFloat(longitude));
       setValidationResult(res);
     } catch (err) {
-      setValidationResult({ is_valid: false, error_message: 'Validation service unreachable.' });
+      setValidationResult({ is_valid: false, error_message: 'Spatial verification engine unreachable.' });
     }
+  };
+
+  const handleUseDeviceGps = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+    setGpsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLatitude(parseFloat(pos.coords.latitude.toFixed(5)));
+        setLongitude(parseFloat(pos.coords.longitude.toFixed(5)));
+        setGpsLocating(false);
+        setValidationResult(null);
+      },
+      (err) => {
+        setGpsLocating(false);
+        alert(`Could not acquire GPS: ${err.message}. Please enter coordinates manually or use preset buttons.`);
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
+
+  const applyPreset = (preset) => {
+    setLatitude(preset.lat);
+    setLongitude(preset.lon);
+    setValidationResult(null);
   };
 
   const handleSubmit = async (e) => {
@@ -76,6 +127,7 @@ const ScoutingPage = () => {
       setObservations([created, ...observations]);
       alert(`Observation saved successfully in Taluk: ${created.taluk_name}!`);
       setNotes('');
+      setValidationResult(null);
     } catch (err) {
       alert(`Submission error: ${err.response?.data?.detail || err.message}`);
     } finally {
@@ -83,241 +135,381 @@ const ScoutingPage = () => {
     }
   };
 
-  const getSesLabel = (score) => {
-    switch (score) {
-      case 0: return '0 - No lesion observed (Immune/Healthy)';
-      case 1: return '1 - Small brown specks of pin-point size (< 0.5 mm)';
-      case 2: return '2 - Larger brown specks without sporulating center';
-      case 3: return '3 - Small roundish to slightly elongated necrotic gray spots';
-      case 4: return '4 - Typical spindle blast lesions (< 2% leaf area)';
-      case 5: return '5 - Typical blast lesions infecting 2-10% leaf area';
-      case 6: return '6 - Typical blast lesions infecting 11-25% leaf area';
-      case 7: return '7 - Typical blast lesions infecting 26-50% leaf area';
-      case 8: return '8 - Lesions coalescing, 51-75% leaf area killed';
-      case 9: return '9 - Extensive lodging, > 75% leaf area killed';
-      default: return `SES ${score}`;
-    }
-  };
-
   return (
-    <div className="container px-4 py-4">
-      <div className="mb-4 pb-2 border-bottom">
-        <h2 className="fw-bold mb-1 text-dark">Field Scouting & Ground Truth Recording</h2>
-        <p className="text-muted mb-0">
-          Submit single field observations with Point-in-Polygon Taluk validation and IRRI SES severity scoring.
-        </p>
+    <div className="container-fluid px-3 px-lg-4 py-4">
+      {/* Title & Header */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom gap-3">
+        <div>
+          <div className="d-flex align-items-center gap-2 mb-1">
+            <span className="badge bg-success text-white px-2 py-1 small" style={{ fontSize: '0.72rem' }}>
+              FIELD TELEMETRY
+            </span>
+            <span className="text-secondary small">&bull;</span>
+            <span className="text-secondary small">Point-in-Polygon Administrative Mapping</span>
+          </div>
+          <h2 className="font-heading fw-bold mb-1 text-dark">
+            Mobile Field Scouting & Ground Verification Tool
+          </h2>
+          <p className="text-muted small mb-0">
+            Log standardized ground truth observations using the <strong>IRRI Standard Evaluation System (SES 0-9)</strong>.
+          </p>
+        </div>
+
+        <div className="d-flex align-items-center gap-2">
+          <span className="badge bg-light text-secondary border px-3 py-2 small">
+            <i className="bi bi-pin-map text-danger me-1"></i> Total Recorded Points: <strong>{observations.length}</strong>
+          </span>
+        </div>
       </div>
 
       <div className="row g-4">
-        {/* Left Column: Form */}
-        <div className="col-12 col-lg-6">
-          <div className="card shadow-sm border-0 p-4">
-            <h5 className="fw-bold mb-3 text-dark">Log Field Observation</h5>
-            <form onSubmit={handleSubmit}>
-              <div className="row g-2 mb-3">
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Target Crop</label>
-                  <select className="form-select form-select-sm" value={cropId} onChange={(e) => setCropId(e.target.value)}>
-                    {crops.map((c) => (
-                      <option key={c.id} value={c.id}>{c.common_name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Pathogen / Disease</label>
-                  <select className="form-select form-select-sm" value={diseaseId} onChange={(e) => setDiseaseId(e.target.value)}>
-                    {diseases.map((d) => (
-                      <option key={d.id} value={d.id}>{d.name}</option>
-                    ))}
-                  </select>
-                </div>
+        {/* Left Form Column */}
+        <div className="col-12 col-lg-7">
+          <div className="card shadow-sm border-0">
+            <div className="card-header bg-slate-900 text-white py-3 d-flex justify-content-between align-items-center"
+                 style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
+              <div className="d-flex align-items-center gap-2">
+                <i className="bi bi-geo-alt-fill text-success fs-5"></i>
+                <h5 className="font-heading fw-bold mb-0 text-white">Log New Field Observation</h5>
               </div>
+              <span className="badge bg-secondary-subtle text-dark small" style={{ fontSize: '0.7rem' }}>
+                WGS84 Coordinates
+              </span>
+            </div>
 
-              {/* Coordinates & PIP Check */}
-              <div className="p-3 bg-light rounded mb-3">
-                <label className="form-label small fw-bold text-dark mb-1">
-                  GPS Coordinates (Madurai Bounds: 9.5°N - 10.35°N, 77.75°E - 78.5°E)
-                </label>
-                <div className="row g-2 align-items-center">
-                  <div className="col-5">
-                    <div className="input-group input-group-sm">
-                      <span className="input-group-text">Lat</span>
-                      <input
-                        type="number"
-                        step="0.0001"
-                        className="form-control"
-                        value={latitude}
-                        onChange={(e) => setLatitude(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-5">
-                    <div className="input-group input-group-sm">
-                      <span className="input-group-text">Lon</span>
-                      <input
-                        type="number"
-                        step="0.0001"
-                        className="form-control"
-                        value={longitude}
-                        onChange={(e) => setLongitude(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-2">
+            <div className="card-body p-4">
+              <form onSubmit={handleSubmit}>
+                {/* Coordinates & Testing Presets */}
+                <div className="mb-4 p-3 bg-light rounded-3 border">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <label className="form-label mb-0">
+                      <i className="bi bi-crosshair text-danger me-1"></i> GPS Coordinates (WGS84)
+                    </label>
                     <button
                       type="button"
-                      className="btn btn-sm btn-outline-primary w-100"
-                      onClick={handleValidateCoordinates}
+                      className="btn btn-sm btn-outline-secondary py-0 px-2 small"
+                      style={{ fontSize: '0.75rem' }}
+                      onClick={handleUseDeviceGps}
+                      disabled={gpsLocating}
                     >
-                      Verify
+                      {gpsLocating ? (
+                        <span><span className="spinner-border spinner-border-sm me-1"></span>Acquiring...</span>
+                      ) : (
+                        <span><i className="bi bi-cursor-fill me-1"></i>Use Device GPS</span>
+                      )}
                     </button>
                   </div>
-                </div>
 
-                {validationResult && (
-                  <div className={`mt-2 small ${validationResult.is_valid ? 'text-success' : 'text-danger'}`}>
-                    {validationResult.is_valid ? (
-                      <span><i className="bi bi-geo-alt-fill me-1"></i> Verified in Taluk: <strong>{validationResult.taluk_name}</strong></span>
-                    ) : (
-                      <span><i className="bi bi-x-circle-fill me-1"></i> {validationResult.error_message}</span>
+                  {/* Preset Pills */}
+                  <div className="d-flex flex-wrap gap-1 mb-3">
+                    <span className="small text-muted me-1 align-self-center" style={{ fontSize: '0.72rem' }}>Quick Test:</span>
+                    {testingPresets.map((preset, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        className="btn btn-sm btn-light border py-0 px-2 text-secondary"
+                        style={{ fontSize: '0.75rem' }}
+                        onClick={() => applyPreset(preset)}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="row g-2 mb-2">
+                    <div className="col-12 col-sm-6">
+                      <div className="input-group input-group-sm">
+                        <span className="input-group-text font-mono">Lat:</span>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          className="form-control font-mono"
+                          value={latitude}
+                          onChange={(e) => {
+                            setLatitude(e.target.value);
+                            setValidationResult(null);
+                          }}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="col-12 col-sm-6">
+                      <div className="input-group input-group-sm">
+                        <span className="input-group-text font-mono">Lon:</span>
+                        <input
+                          type="number"
+                          step="0.0001"
+                          className="form-control font-mono"
+                          value={longitude}
+                          onChange={(e) => {
+                            setLongitude(e.target.value);
+                            setValidationResult(null);
+                          }}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="d-flex justify-content-between align-items-center">
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={handleValidateCoordinates}
+                    >
+                      <i className="bi bi-shield-check me-1"></i> Verify Point-in-Polygon (PIP)
+                    </button>
+
+                    {validationResult && (
+                      <div>
+                        {validationResult.is_valid ? (
+                          <span className="badge badge-risk-low px-2 py-1">
+                            <i className="bi bi-check-circle-fill me-1"></i> Assigned Taluk: <strong>{validationResult.taluk_name}</strong>
+                          </span>
+                        ) : (
+                          <span className="badge badge-risk-severe px-2 py-1">
+                            <i className="bi bi-exclamation-octagon-fill me-1"></i> Outside Madurai Bounding Box
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
+                </div>
+
+                {/* Target Crop & Disease */}
+                <div className="row g-3 mb-3">
+                  <div className="col-12 col-sm-6">
+                    <label className="form-label">Crop Species</label>
+                    <select
+                      className="form-select form-select-sm"
+                      value={cropId}
+                      onChange={(e) => setCropId(e.target.value)}
+                      required
+                    >
+                      {crops.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name} ({c.scientific_name})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="col-12 col-sm-6">
+                    <label className="form-label">Target Pathogen</label>
+                    <select
+                      className="form-select form-select-sm"
+                      value={diseaseId}
+                      onChange={(e) => setDiseaseId(e.target.value)}
+                      required
+                    >
+                      {diseases.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name} ({d.scientific_name})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Phenological Stage & Date */}
+                <div className="row g-3 mb-3">
+                  <div className="col-12 col-sm-6">
+                    <label className="form-label">Growth Stage</label>
+                    <select
+                      className="form-select form-select-sm"
+                      value={growthStage}
+                      onChange={(e) => setGrowthStage(e.target.value)}
+                    >
+                      <option value="Nursery / Seedling">Nursery / Seedling</option>
+                      <option value="Tillering">Tillering (High Blast Risk)</option>
+                      <option value="Panicle Initiation">Panicle Initiation</option>
+                      <option value="Flowering / Heading">Flowering / Heading (Neck Blast)</option>
+                      <option value="Grain Filling / Maturation">Grain Filling / Maturation</option>
+                    </select>
+                  </div>
+                  <div className="col-12 col-sm-6">
+                    <label className="form-label">Survey Date</label>
+                    <input
+                      type="date"
+                      className="form-control form-control-sm"
+                      value={obsDate}
+                      onChange={(e) => setObsDate(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Disease Presence Checkbox */}
+                <div className="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="diseaseCheck"
+                    checked={diseasePresent}
+                    onChange={(e) => {
+                      setDiseasePresent(e.target.checked);
+                      if (!e.target.checked) {
+                        setSeveritySes(0);
+                        setIncidencePct(0);
+                      }
+                    }}
+                  />
+                  <label className="form-check-label fw-semibold text-dark small" htmlFor="diseaseCheck">
+                    Macroscopic Symptoms Present on Leaves / Panicles
+                  </label>
+                </div>
+
+                {/* IRRI SES Severity Interactive Slider */}
+                {diseasePresent && (
+                  <div className="mb-4 p-3 bg-light rounded-3 border">
+                    <div className="d-flex justify-content-between align-items-center mb-1">
+                      <label className="form-label mb-0">IRRI Standard Evaluation System (SES Score)</label>
+                      <span className="badge bg-danger fs-6 px-2 py-0">Score: {severitySes} / 9</span>
+                    </div>
+
+                    <input
+                      type="range"
+                      className="form-range"
+                      min="0"
+                      max="9"
+                      step="1"
+                      value={severitySes}
+                      onChange={(e) => setSeveritySes(e.target.value)}
+                    />
+
+                    {/* Dynamic Symptom Visual Card */}
+                    <div className="p-2 rounded bg-white border small mt-2">
+                      <div className="d-flex justify-content-between align-items-center mb-1">
+                        <strong className={irriScaleDescriptions[severitySes]?.color || 'text-dark'}>
+                          SES {severitySes}: {irriScaleDescriptions[severitySes]?.label}
+                        </strong>
+                        <span className="badge bg-light text-secondary border">IRRI Standard</span>
+                      </div>
+                      <div className="text-secondary" style={{ fontSize: '0.8rem' }}>
+                        {irriScaleDescriptions[severitySes]?.desc}
+                      </div>
+                    </div>
+
+                    {/* Field Incidence Percentage */}
+                    <div className="mt-3">
+                      <label className="form-label">Estimated Canopy Incidence (%)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        className="form-control form-control-sm"
+                        value={incidencePct}
+                        onChange={(e) => setIncidencePct(e.target.value)}
+                      />
+                    </div>
+                  </div>
                 )}
-              </div>
 
-              {/* Growth Stage & Presence */}
-              <div className="row g-2 mb-3">
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Growth Stage</label>
-                  <select className="form-select form-select-sm" value={growthStage} onChange={(e) => setGrowthStage(e.target.value)}>
-                    <option value="Tillering">Tillering (Active Leaf Blast)</option>
-                    <option value="Panicle Initiation">Panicle Initiation</option>
-                    <option value="Heading/Flowering">Heading/Flowering (Neck Blast)</option>
-                    <option value="Booting">Booting</option>
-                    <option value="Milk/Dough">Milk / Dough stage</option>
-                    <option value="Seedling/Nursery">Seedling / Nursery</option>
-                    <option value="Maturity">Maturity</option>
-                  </select>
+                {/* Observer Details & Provenance */}
+                <div className="row g-3 mb-3">
+                  <div className="col-12 col-sm-6">
+                    <label className="form-label">Observer Designation</label>
+                    <input
+                      type="text"
+                      className="form-control form-control-sm"
+                      value={observerName}
+                      onChange={(e) => setObserverName(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-12 col-sm-6">
+                    <label className="form-label">Data Provenance Tag</label>
+                    <select
+                      className="form-select form-select-sm"
+                      value={provenance}
+                      onChange={(e) => setProvenance(e.target.value)}
+                    >
+                      <option value="USER_SCOUTED">USER_SCOUTED (Live Field Surveyor)</option>
+                      <option value="REAL_FIELD_SURVEY">REAL_FIELD_SURVEY (Validated Ground Survey)</option>
+                      <option value="PUBLIC_HISTORICAL_REANALYSIS">PUBLIC_HISTORICAL_REANALYSIS (Benchmark)</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Observation Date</label>
-                  <input
-                    type="date"
+
+                {/* Notes */}
+                <div className="mb-4">
+                  <label className="form-label">Agronomic Notes & Symptoms</label>
+                  <textarea
                     className="form-control form-control-sm"
-                    value={obsDate}
-                    onChange={(e) => setObsDate(e.target.value)}
-                    required
-                  />
+                    rows="2"
+                    placeholder="e.g., Symptoms observed on young tillers, morning dew heavy, nitrogen over-fertilization noted..."
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                  ></textarea>
                 </div>
-              </div>
 
-              {/* Severity Slider */}
-              <div className="mb-3">
-                <div className="d-flex justify-content-between align-items-center mb-1">
-                  <label className="form-label small fw-semibold mb-0">IRRI Standard Evaluation System (SES) Scale</label>
-                  <span className="badge bg-dark">Score: {severitySes}/9</span>
-                </div>
-                <input
-                  type="range"
-                  className="form-range"
-                  min="0"
-                  max="9"
-                  step="1"
-                  value={severitySes}
-                  onChange={(e) => setSeveritySes(parseInt(e.target.value))}
-                />
-                <div className="small text-muted fst-italic">
-                  {getSesLabel(severitySes)}
-                </div>
-              </div>
-
-              {/* Incidence and Observer */}
-              <div className="row g-2 mb-3">
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Field Incidence (%)</label>
-                  <input
-                    type="number"
-                    step="0.5"
-                    min="0"
-                    max="100"
-                    className="form-control form-control-sm"
-                    value={incidencePct}
-                    onChange={(e) => setIncidencePct(e.target.value)}
-                  />
-                </div>
-                <div className="col-6">
-                  <label className="form-label small fw-semibold">Observer Name</label>
-                  <input
-                    type="text"
-                    className="form-control form-control-sm"
-                    value={observerName}
-                    onChange={(e) => setObserverName(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label small fw-semibold">Field Notes & Symptoms</label>
-                <textarea
-                  className="form-control form-control-sm"
-                  rows="2"
-                  placeholder="e.g. Spindle-shaped lesions on upper leaves, grey center, water stress noted."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                className="btn btn-success w-100 py-2 fw-semibold"
-                disabled={loading}
-              >
-                {loading ? 'Recording...' : 'Submit Field Observation'}
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  className="btn btn-pro-primary w-100 py-2 fw-semibold"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <span><span className="spinner-border spinner-border-sm me-2"></span>Recording Observation...</span>
+                  ) : (
+                    <span><i className="bi bi-cloud-arrow-up-fill me-2"></i>Submit Ground Observation</span>
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
 
-        {/* Right Column: Existing Observations Feed */}
-        <div className="col-12 col-lg-6">
-          <div className="card shadow-sm border-0 p-4 h-100">
-            <h5 className="fw-bold mb-3 text-dark">Logged Observations ({observations.length})</h5>
-            <div className="table-responsive" style={{ maxHeight: '550px' }}>
-              <table className="table table-hover align-middle small mb-0">
-                <thead className="table-light">
-                  <tr>
-                    <th>Taluk</th>
-                    <th>Date</th>
-                    <th>Pathogen</th>
-                    <th>SES Score</th>
-                    <th>Incidence</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {observations.length === 0 ? (
+        {/* Right Logged Records Table */}
+        <div className="col-12 col-lg-5">
+          <div className="card shadow-sm border-0 h-100">
+            <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 className="font-heading fw-bold mb-0 text-dark">
+                  <i className="bi bi-clock-history text-success me-2"></i>
+                  Ground Truth Database
+                </h5>
+                <span className="small text-muted" style={{ fontSize: '0.75rem' }}>
+                  Live observations stored in SQLite engine
+                </span>
+              </div>
+              <span className="badge bg-light text-secondary border">{observations.length} Entries</span>
+            </div>
+
+            <div className="card-body p-0">
+              <div className="table-responsive" style={{ maxHeight: '680px' }}>
+                <table className="table table-hover align-middle mb-0">
+                  <thead className="sticky-top bg-light">
                     <tr>
-                      <td colSpan="5" className="text-center text-muted py-4">No observations recorded yet.</td>
+                      <th>Taluk</th>
+                      <th>Severity</th>
+                      <th>Incidence</th>
+                      <th>Stage</th>
                     </tr>
-                  ) : (
-                    observations.map((obs) => (
+                  </thead>
+                  <tbody>
+                    {observations.map((obs) => (
                       <tr key={obs.id}>
-                        <td className="fw-bold">{obs.taluk_name}</td>
-                        <td className="text-muted">{obs.observation_date}</td>
-                        <td>{obs.disease_name}</td>
                         <td>
-                          <span className={`badge ${obs.severity_score_ses >= 7 ? 'bg-danger' : obs.severity_score_ses >= 4 ? 'bg-warning text-dark' : 'bg-success'}`}>
+                          <div className="fw-semibold text-dark">{obs.taluk_name}</div>
+                          <div className="text-muted font-mono" style={{ fontSize: '0.68rem' }}>
+                            {obs.latitude.toFixed(3)}, {obs.longitude.toFixed(3)}
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`badge ${obs.severity_score_ses === 0 ? 'badge-risk-low' : obs.severity_score_ses <= 3 ? 'badge-risk-moderate' : 'badge-risk-severe'}`}>
                             SES {obs.severity_score_ses}
                           </span>
                         </td>
-                        <td>{obs.incidence_percentage}%</td>
+                        <td className="small text-secondary">{obs.incidence_percentage}%</td>
+                        <td>
+                          <span className="badge bg-light text-dark border small" style={{ fontSize: '0.7rem' }}>
+                            {obs.growth_stage}
+                          </span>
+                        </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
