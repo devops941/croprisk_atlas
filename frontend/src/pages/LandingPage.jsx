@@ -648,7 +648,7 @@ const LandingPage = () => {
                     <p className="small text-secondary mb-3" style={{ lineHeight: '1.6' }}>
                       {currentPathogen.prophylacticAdvice}
                     </p>
-                    <Link to="/rules" className="btn btn-sm btn-outline-success">
+                    <Link to="/knowledge" className="btn btn-sm btn-outline-success">
                       Read Full Biological Rules Dossier <i className="bi bi-arrow-right ms-1"></i>
                     </Link>
                   </div>

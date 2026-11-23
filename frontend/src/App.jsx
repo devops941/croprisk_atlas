@@ -23,6 +23,7 @@ function App() {
           <Route path="/data" element={<DataManagerPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/knowledge" element={<KnowledgeBasePage />} />
+          <Route path="/rules" element={<KnowledgeBasePage />} />
         </Routes>
       </main>
       <Footer />
