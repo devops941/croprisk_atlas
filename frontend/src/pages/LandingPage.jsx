@@ -6,44 +6,99 @@ const LandingPage = () => {
   const [selectedTaluk, setSelectedTaluk] = useState('melur');
 
   const talukData = {
-    melur: {
-      name: 'Melur Taluk (Periyar Basin)',
-      riskLevel: 'HIGH RISK',
-      score: '85%',
-      colorClass: 'danger',
-      bgClass: 'badge-risk-severe',
-      temp: '21.5°C',
-      rh: '94%',
-      wetness: '11.4 hrs',
-      rainfall: '14.2 mm',
-      insight: 'Optimal night temperature and morning relative humidity. Sustained leaf wetness exceeded 11 hours, creating high spore germination pressure.',
-      action: 'Deploy extension squads immediately; advise prophylactic bio-agent (Pseudomonas fluorescens 2.5 kg/ha).'
+    blast: {
+      melur: {
+        name: 'Melur Taluk (Periyar Basin)',
+        riskLevel: 'HIGH RISK',
+        score: '90%',
+        colorClass: 'danger',
+        bgClass: 'badge-risk-severe',
+        fillColor: 'rgba(239, 68, 68, 0.9)',
+        strokeColor: '#ef4444',
+        temp: '21.5°C',
+        rh: '94%',
+        wetness: '11.4 hrs',
+        rainfall: '14.2 mm',
+        insight: 'Optimal night temperature and morning relative humidity. Sustained leaf wetness exceeded 11 hours, creating critical spore incubation conditions for Magnaporthe oryzae.',
+        action: 'Deploy extension squads immediately; advise prophylactic bio-agent (Pseudomonas fluorescens 2.5 kg/ha) or Tricyclazole 75 WP.'
+      },
+      vadipatti: {
+        name: 'Vadipatti Taluk',
+        riskLevel: 'HIGH RISK',
+        score: '90%',
+        colorClass: 'danger',
+        bgClass: 'badge-risk-severe',
+        fillColor: 'rgba(239, 68, 68, 0.85)',
+        strokeColor: '#ef4444',
+        temp: '21.8°C',
+        rh: '92%',
+        wetness: '10.8 hrs',
+        rainfall: '9.5 mm',
+        insight: 'Heavy dew condensation and favorable minimum temperatures. High multi-day cumulative blast pressure across nursery and tillering stages.',
+        action: 'Issue high-priority field warning; inspect early tillering Samba crops for spindle lesions.'
+      },
+      sedapatti: {
+        name: 'Sedapatti Taluk',
+        riskLevel: 'LOW RISK',
+        score: '26%',
+        colorClass: 'success',
+        bgClass: 'badge-risk-low',
+        fillColor: 'rgba(16, 185, 129, 0.55)',
+        strokeColor: '#10b981',
+        temp: '28.1°C',
+        rh: '65%',
+        wetness: '3.1 hrs',
+        rainfall: '0.0 mm',
+        insight: 'Warm, dry atmospheric conditions. High solar radiation and low dew condensation suppress fungal spore proliferation.',
+        action: 'Routine surveillance only; no chemical or biological interventions required at this stage.'
+      }
     },
-    vadipatti: {
-      name: 'Vadipatti Taluk',
-      riskLevel: 'MEDIUM RISK',
-      score: '62%',
-      colorClass: 'warning',
-      bgClass: 'badge-risk-high',
-      temp: '24.2°C',
-      rh: '88%',
-      wetness: '8.6 hrs',
-      rainfall: '6.0 mm',
-      insight: 'Moderate infection window with sustained canopy moisture. Sporulation potential is rising over the 5-day sliding window.',
-      action: 'Issue watch advisory to local farmer groups; conduct random field sampling on early-transplanted Samba plots.'
-    },
-    sedapatti: {
-      name: 'Sedapatti Taluk',
-      riskLevel: 'LOW RISK',
-      score: '18%',
-      colorClass: 'success',
-      bgClass: 'badge-risk-low',
-      temp: '28.1°C',
-      rh: '65%',
-      wetness: '3.1 hrs',
-      rainfall: '0.0 mm',
-      insight: 'Warm, dry atmospheric conditions. High solar radiation and low dew condensation suppress fungal spore proliferation.',
-      action: 'Routine surveillance only; no chemical or biological interventions required at this stage.'
+    brown_spot: {
+      melur: {
+        name: 'Melur Taluk (Periyar Basin)',
+        riskLevel: 'MEDIUM RISK',
+        score: '56%',
+        colorClass: 'warning',
+        bgClass: 'badge-risk-moderate',
+        fillColor: 'rgba(245, 158, 11, 0.8)',
+        strokeColor: '#f59e0b',
+        temp: '26.8°C',
+        rh: '86%',
+        wetness: '7.8 hrs',
+        rainfall: '4.2 mm',
+        insight: 'Moderate temperature and humidity conducive for Bipolaris oryzae conidial dispersal. Watch out for nutrient-stressed plots on lighter soils.',
+        action: 'Issue preventive advisory; recommend balanced potash application and spot surveillance on lighter soils.'
+      },
+      vadipatti: {
+        name: 'Vadipatti Taluk',
+        riskLevel: 'MEDIUM RISK',
+        score: '56%',
+        colorClass: 'warning',
+        bgClass: 'badge-risk-moderate',
+        fillColor: 'rgba(245, 158, 11, 0.8)',
+        strokeColor: '#f59e0b',
+        temp: '27.1°C',
+        rh: '85%',
+        wetness: '7.2 hrs',
+        rainfall: '3.0 mm',
+        insight: 'Intermittent cloudy conditions and favorable day-night temperature range promoting brown circular lesion development on foliage.',
+        action: 'Alert local agricultural officers; recommend foliar spray of Mancozeb 75 WP @ 1000 g/ha if spots are detected.'
+      },
+      sedapatti: {
+        name: 'Sedapatti Taluk',
+        riskLevel: 'LOW RISK',
+        score: '21%',
+        colorClass: 'success',
+        bgClass: 'badge-risk-low',
+        fillColor: 'rgba(16, 185, 129, 0.5)',
+        strokeColor: '#10b981',
+        temp: '29.5°C',
+        rh: '60%',
+        wetness: '2.5 hrs',
+        rainfall: '0.0 mm',
+        insight: 'Relative humidity remains below the critical 85% threshold. Spore germination inhibited by dry canopy conditions.',
+        action: 'Low vulnerability zone. Normal agronomic practices with zero chemical intervention.'
+      }
     }
   };
 
@@ -74,7 +129,8 @@ const LandingPage = () => {
     }
   };
 
-  const currentTaluk = talukData[selectedTaluk];
+  const activeData = talukData[activePathogen];
+  const currentTaluk = activeData[selectedTaluk] || activeData.melur;
   const currentPathogen = pathogenInfo[activePathogen];
 
   return (
@@ -169,8 +225,8 @@ const LandingPage = () => {
                       </span>
                     </div>
                   </div>
-                  <span className="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 small fw-bold font-mono">
-                    OCT 25 PEAK
+                  <span className={`badge ${activePathogen === 'blast' ? 'bg-danger-subtle text-danger border-danger-subtle' : 'bg-warning-subtle text-warning border-warning-subtle'} border px-2 py-1 small fw-bold font-mono`}>
+                    {activePathogen === 'blast' ? 'OCT 25 BLAST PEAK' : 'OCT 25 BROWN SPOT PEAK'}
                   </span>
                 </div>
 
@@ -180,16 +236,16 @@ const LandingPage = () => {
                   <div className="btn-group btn-group-sm" role="group">
                     <button
                       type="button"
-                      className={`btn btn-sm py-1 px-2 ${activePathogen === 'blast' ? 'btn-success text-white fw-bold' : 'btn-outline-secondary'}`}
-                      style={{ fontSize: '0.72rem' }}
+                      className={`btn btn-sm py-1 px-3 ${activePathogen === 'blast' ? 'btn-success text-white fw-bold shadow-xs' : 'btn-outline-secondary'}`}
+                      style={{ fontSize: '0.75rem' }}
                       onClick={() => setActivePathogen('blast')}
                     >
                       Rice Blast
                     </button>
                     <button
                       type="button"
-                      className={`btn btn-sm py-1 px-2 ${activePathogen === 'brown_spot' ? 'btn-success text-white fw-bold' : 'btn-outline-secondary'}`}
-                      style={{ fontSize: '0.72rem' }}
+                      className={`btn btn-sm py-1 px-3 ${activePathogen === 'brown_spot' ? 'btn-success text-white fw-bold shadow-xs' : 'btn-outline-secondary'}`}
+                      style={{ fontSize: '0.75rem' }}
                       onClick={() => setActivePathogen('brown_spot')}
                     >
                       Brown Spot
@@ -230,73 +286,72 @@ const LandingPage = () => {
                     <line x1="120" y1="10" x2="120" y2="190" stroke="rgba(255,255,255,0.08)" strokeDasharray="3,3" />
                     <line x1="240" y1="10" x2="240" y2="190" stroke="rgba(255,255,255,0.08)" strokeDasharray="3,3" />
 
-                    {/* Vadipatti Taluk (Moderate Risk) */}
+                    {/* Vadipatti Taluk */}
                     <polygon
                       points="60,40 130,25 155,75 110,105 50,80"
-                      fill={selectedTaluk === 'vadipatti' ? 'rgba(245, 158, 11, 0.85)' : 'rgba(245, 158, 11, 0.55)'}
-                      stroke="#f59e0b"
-                      strokeWidth={selectedTaluk === 'vadipatti' ? "2.5" : "1.5"}
-                      filter="url(#glow-amber)"
-                      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+                      fill={activeData.vadipatti.fillColor}
+                      stroke={activeData.vadipatti.strokeColor}
+                      strokeWidth={selectedTaluk === 'vadipatti' ? "3" : "1.5"}
+                      filter={activeData.vadipatti.riskLevel === 'HIGH RISK' ? "url(#glow-red)" : "url(#glow-amber)"}
+                      style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}
                       onClick={() => setSelectedTaluk('vadipatti')}
                     />
                     <text x="95" y="65" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle" pointerEvents="none">
-                      Vadipatti (62%)
+                      {activeData.vadipatti.riskLevel === 'HIGH RISK' ? '★ ' : ''}Vadipatti ({activeData.vadipatti.score})
                     </text>
 
-                    {/* Melur Taluk (High Risk) */}
+                    {/* Melur Taluk */}
                     <polygon
                       points="200,20 290,15 330,65 275,100 190,70"
-                      fill={selectedTaluk === 'melur' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(239, 68, 68, 0.65)'}
-                      stroke="#ef4444"
+                      fill={activeData.melur.fillColor}
+                      stroke={activeData.melur.strokeColor}
                       strokeWidth={selectedTaluk === 'melur' ? "3" : "1.8"}
-                      filter="url(#glow-red)"
-                      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+                      filter={activeData.melur.riskLevel === 'HIGH RISK' ? "url(#glow-red)" : "url(#glow-amber)"}
+                      style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}
                       onClick={() => setSelectedTaluk('melur')}
                     />
                     <text x="250" y="55" fill="#ffffff" fontSize="11" fontWeight="bold" textAnchor="middle" pointerEvents="none">
-                      ★ Melur (85%)
+                      {activeData.melur.riskLevel === 'HIGH RISK' ? '★ ' : ''}Melur ({activeData.melur.score})
                     </text>
 
-                    {/* Madurai North & South (Low Risk) */}
+                    {/* Madurai North & South */}
                     <polygon
                       points="140,75 205,70 230,125 160,135 125,105"
-                      fill="#10b981"
-                      fillOpacity="0.45"
-                      stroke="#10b981"
+                      fill={activePathogen === 'blast' ? '#ef4444' : '#f59e0b'}
+                      fillOpacity={activePathogen === 'blast' ? "0.75" : "0.65"}
+                      stroke={activePathogen === 'blast' ? '#ef4444' : '#f59e0b'}
                       strokeWidth="1.2"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => setSelectedTaluk('sedapatti')}
+                      style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}
+                      onClick={() => setSelectedTaluk('vadipatti')}
                     />
                     <text x="175" y="105" fill="#ffffff" fontSize="9" fontWeight="600" textAnchor="middle" pointerEvents="none">
-                      Madurai Urban
+                      Madurai North ({activePathogen === 'blast' ? '90%' : '56%'})
                     </text>
 
                     {/* Thirumangalam / Usilampatti */}
                     <polygon
                       points="40,95 115,105 145,155 75,170 30,135"
-                      fill="#10b981"
-                      fillOpacity="0.45"
-                      stroke="#10b981"
+                      fill={activePathogen === 'blast' ? 'rgba(239, 68, 68, 0.7)' : 'rgba(245, 158, 11, 0.6)'}
+                      stroke={activePathogen === 'blast' ? '#ef4444' : '#f59e0b'}
                       strokeWidth="1.2"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => setSelectedTaluk('sedapatti')}
+                      style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}
+                      onClick={() => setSelectedTaluk('vadipatti')}
                     />
                     <text x="85" y="135" fill="#ffffff" fontSize="9" fontWeight="600" textAnchor="middle" pointerEvents="none">
-                      Thirumangalam
+                      Usilampatti ({activePathogen === 'blast' ? '90%' : '56%'})
                     </text>
 
-                    {/* Sedapatti & Peraiyur (Low Risk) */}
+                    {/* Sedapatti & Peraiyur */}
                     <polygon
                       points="100,155 180,140 230,190 140,195 80,175"
-                      fill={selectedTaluk === 'sedapatti' ? 'rgba(16, 185, 129, 0.85)' : 'rgba(16, 185, 129, 0.5)'}
-                      stroke="#10b981"
+                      fill={activeData.sedapatti.fillColor}
+                      stroke={activeData.sedapatti.strokeColor}
                       strokeWidth={selectedTaluk === 'sedapatti' ? "2.5" : "1.2"}
-                      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+                      style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}
                       onClick={() => setSelectedTaluk('sedapatti')}
                     />
                     <text x="155" y="175" fill="#ffffff" fontSize="9" fontWeight="bold" textAnchor="middle" pointerEvents="none">
-                      Sedapatti (18%)
+                      Sedapatti ({activeData.sedapatti.score})
                     </text>
 
                     {/* Field Scout Pin Indicators */}
